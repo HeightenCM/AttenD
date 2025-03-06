@@ -18,18 +18,18 @@ import java.time.LocalDateTime
 @Composable
 fun EventState(
     modifier: Modifier = Modifier,
-    eventDate: LocalDateTime) {
-    val textValue = if(eventDate>LocalDateTime.now()){
-        "COMING"
+    date: LocalDateTime) {
+    val textValue = if(date>LocalDateTime.now()){
+        " COMING "
     } else {
-        "ENDED"
+        " ENDED "
     }
-    val boxColor = if(eventDate>LocalDateTime.now()){
+    val boxColor = if(date>LocalDateTime.now()){
         greenBackground
     } else {
         MaterialTheme.colorScheme.errorContainer
     }
-    val textColor = if(eventDate>LocalDateTime.now()){
+    val textColor = if(date>LocalDateTime.now()){
         Color.Green
     } else {
         MaterialTheme.colorScheme.onErrorContainer
@@ -50,6 +50,6 @@ fun EventState(
 @Composable
 private fun EventStatePreview() {
     AttenDTheme {
-        EventState(eventDate = LocalDateTime.now().plusDays(1))
+        EventState(date = LocalDateTime.now().plusDays(1))
     }
 }

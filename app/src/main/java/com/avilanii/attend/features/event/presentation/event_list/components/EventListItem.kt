@@ -40,7 +40,7 @@ fun EventListItem(eventUi: EventUi,
             text = eventUi.name,
             color = contentColor)
         EventState(
-            eventDate = eventUi.dateTime.value
+            date = eventUi.dateTime.value
         )
     }
 }
