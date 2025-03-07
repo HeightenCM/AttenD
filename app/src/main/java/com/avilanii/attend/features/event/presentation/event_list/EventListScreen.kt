@@ -17,6 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -35,6 +39,7 @@ fun EventListScreen(
     modifier: Modifier = Modifier,
     state: EventListState,
     onAction: (EventListAction)->Unit) {
+    var showCreateEventDialog by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold (
         topBar = {
@@ -72,6 +77,9 @@ fun EventListScreen(
                     )
                     HorizontalDivider()
                 }
+            }
+            if (showCreateEventDialog){
+
             }
         }
     }
