@@ -17,7 +17,7 @@ fun CreateEventFAB(
     onClick: () -> Unit
 ){
     ExtendedFloatingActionButton(
-        onClick = {},
+        onClick = onClick,
         icon = { Icon(Icons.Filled.Add, "Create event icon") },
         text = { Text("Create event") },
         containerColor = MaterialTheme.colorScheme.primary

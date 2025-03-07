@@ -1,4 +1,4 @@
-package com.avilanii.attend.features.event.presentation.event_list.components
+package com.avilanii.attend.features.event.presentation.event_create.components
 
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
