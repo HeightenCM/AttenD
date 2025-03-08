@@ -5,8 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -16,11 +22,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.avilanii.attend.features.event.presentation.models.EventUi
+import com.avilanii.attend.features.event.presentation.models.toDisplayableTime
 import com.avilanii.attend.ui.theme.AttenDTheme
 
 @Composable
@@ -31,45 +37,68 @@ fun CreateEventDialog(
     Dialog(
         onDismissRequest = onDismiss
     ) {
-        var event = remember { mutableStateOf(EventUi()) }
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier
+        Card(
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.padding(16.dp).fillMaxWidth()
         ) {
-            OutlinedTextField(
-                value = event.value.name,
-                onValueChange = { newValue ->
-                    event.value.copy(
-                        name = newValue
-                    )
-                },
-                label = {
-                    Text("Event name")
-                }
-            )
-            OutlinedTextField(
-                value = event.value.budget.toString(),
-                onValueChange = { newValue ->
-                    if (newValue.all { it.isDigit() }) {
-                        event.value.copy(
-                            budget = newValue.toInt()
-                        )
-                    }
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = {
-                    Text("Event budget")
-                }
-            )
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+            var event = remember { mutableStateOf(EventUi()) }
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier.padding(8.dp)
             ) {
-                TextButton(onClick = onDismiss) { Text("Cancel") }
-                Button(onClick ={
-                    onSubmit(event.value)
-                }) { Text("Create") }
+                Icon(
+                    imageVector = Icons.Filled.Create,
+                    contentDescription = "Create event icon",
+                    modifier = modifier.padding(8.dp)
+                )
+                Text(
+                    text = "Create an event",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+                OutlinedTextField(
+                    value = event.value.name,
+                    onValueChange = { newValue ->
+                        event.value.copy(
+                            name = newValue
+                        )
+                    },
+                    label = {
+                        Text("Event name")
+                    }
+                )
+                OutlinedTextField(
+                    value = event.value.budget.toString(),
+                    onValueChange = { newValue ->
+                        if (newValue.all { it.isDigit() }) {
+                            event.value.copy(
+                                budget = newValue.toInt()
+                            )
+                        }
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    label = {
+                        Text("Event budget")
+                    }
+                )
+                OutlinedTextField(
+                    value = event.value.dateTime.value.toDisplayableTime().formatted,
+                    onValueChange = { newValue ->
+
+                    },
+                    label = {
+                        Text("Event time")
+                    }
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    TextButton(onClick = onDismiss) { Text("Cancel") }
+                    Button(onClick = {
+                        onSubmit(event.value)
+                    }) { Text("Create") }
+                }
             }
         }
     }

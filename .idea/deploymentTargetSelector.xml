@@ -8,6 +8,9 @@
       <SelectionState runConfigName="PreviewCreateEventDialog - Dark">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="PreviewTimePickerTextField - Dark">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

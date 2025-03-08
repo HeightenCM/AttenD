@@ -7,11 +7,11 @@ import java.time.format.DateTimeFormatter
 data class EventUi(
     val id: Int = 0,
     val name: String = "",
-    val dateTime: DisplayableDate = LocalDateTime.now().toDisplayableDate(),
+    val dateTime: DisplayableDateTime = LocalDateTime.now().toDisplayableDateTime(),
     val budget: Int = 0
 )
 
-data class DisplayableDate(
+data class DisplayableDateTime(
     val value: LocalDateTime,
     val formatted: String
 )
@@ -20,13 +20,29 @@ fun Event.toEventUi():EventUi{
     return EventUi(
         id = this.id,
         name = this.name,
-        dateTime = this.dateTime.toDisplayableDate(),
+        dateTime = this.dateTime.toDisplayableDateTime(),
         budget = this.budget)
 }
 
-fun LocalDateTime.toDisplayableDate(): DisplayableDate{
+fun LocalDateTime.toDisplayableDateTime(): DisplayableDateTime{
     val dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy, HH:mm")
-    return DisplayableDate(
+    return DisplayableDateTime(
+        value = this,
+        formatted = this.format(dateTimeFormatter)
+    )
+}
+
+fun LocalDateTime.toDisplayableDate(): DisplayableDateTime{
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy")
+    return DisplayableDateTime(
+        value = this,
+        formatted = this.format(dateTimeFormatter)
+    )
+}
+
+fun LocalDateTime.toDisplayableTime(): DisplayableDateTime{
+    val dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    return DisplayableDateTime(
         value = this,
         formatted = this.format(dateTimeFormatter)
     )

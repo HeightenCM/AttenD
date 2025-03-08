@@ -17,10 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -30,7 +26,7 @@ import com.avilanii.attend.features.event.presentation.event_list.components.Cre
 import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventFAB
 import com.avilanii.attend.features.event.presentation.event_list.components.EventListItem
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
-import com.avilanii.attend.features.event.presentation.models.toDisplayableDate
+import com.avilanii.attend.features.event.presentation.models.toDisplayableDateTime
 import com.avilanii.attend.ui.theme.AttenDTheme
 import java.time.LocalDateTime
 
@@ -101,7 +97,7 @@ private fun EventListScreenPreview() {
         EventListScreen(
             state = EventListState(
                 events = (1..50).map {
-                    previewEvent.copy(id = it, dateTime = LocalDateTime.now().plusDays(1).toDisplayableDate())
+                    previewEvent.copy(id = it, dateTime = LocalDateTime.now().plusDays(1).toDisplayableDateTime())
                 }
             ),
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
