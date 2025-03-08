@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventDialog
 import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventFAB
 import com.avilanii.attend.features.event.presentation.event_list.components.EventListItem
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
@@ -39,7 +40,6 @@ fun EventListScreen(
     modifier: Modifier = Modifier,
     state: EventListState,
     onAction: (EventListAction)->Unit) {
-    var showCreateEventDialog by remember { mutableStateOf(false) }
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold (
         topBar = {
@@ -78,8 +78,15 @@ fun EventListScreen(
                     HorizontalDivider()
                 }
             }
-            if (showCreateEventDialog){
-
+            if (state.isCreatingEvent){
+                CreateEventDialog(
+                    onDismiss = {
+                        onAction(EventListAction.OnDismissCreateEventDialog)
+                    },
+                    onSubmit = { event ->
+                        onAction(EventListAction.OnCreatedEvent(event))
+                    }
+                )
             }
         }
     }

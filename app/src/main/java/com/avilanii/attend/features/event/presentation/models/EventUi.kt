@@ -5,10 +5,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class EventUi(
-    val id: Int,
-    val name: String,
-    val dateTime: DisplayableDate,
-    val budget: Int
+    val id: Int = 0,
+    val name: String = "",
+    val dateTime: DisplayableDate = LocalDateTime.now().toDisplayableDate(),
+    val budget: Int = 0
 )
 
 data class DisplayableDate(
