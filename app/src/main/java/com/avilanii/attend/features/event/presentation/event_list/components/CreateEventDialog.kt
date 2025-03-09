@@ -17,8 +17,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,7 +28,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.avilanii.attend.features.event.presentation.models.EventUi
-import com.avilanii.attend.features.event.presentation.models.toDisplayableTime
 import com.avilanii.attend.ui.theme.AttenDTheme
 
 @Composable
@@ -41,7 +42,7 @@ fun CreateEventDialog(
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.padding(16.dp).fillMaxWidth()
         ) {
-            var event = remember { mutableStateOf(EventUi()) }
+            var event by remember { mutableStateOf(EventUi()) }
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -57,9 +58,9 @@ fun CreateEventDialog(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 OutlinedTextField(
-                    value = event.value.name,
+                    value = event.name,
                     onValueChange = { newValue ->
-                        event.value.copy(
+                        event.copy(
                             name = newValue
                         )
                     },
@@ -68,10 +69,10 @@ fun CreateEventDialog(
                     }
                 )
                 OutlinedTextField(
-                    value = event.value.budget.toString(),
+                    value = event.budget.toString(),
                     onValueChange = { newValue ->
                         if (newValue.all { it.isDigit() }) {
-                            event.value.copy(
+                            event.copy(
                                 budget = newValue.toInt()
                             )
                         }
@@ -81,22 +82,30 @@ fun CreateEventDialog(
                         Text("Event budget")
                     }
                 )
-                OutlinedTextField(
-                    value = event.value.dateTime.value.toDisplayableTime().formatted,
-                    onValueChange = { newValue ->
+                Row (
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = modifier.fillMaxWidth()
+                ) {
+                    TimePickerTextField(
+                        onChoseValue = {
 
-                    },
-                    label = {
-                        Text("Event time")
-                    }
-                )
+                        },
+                        modifier = modifier.weight(1f)
+                    )
+                    DatePickerTextField(
+                        onChoseValue = {
+
+                        },
+                        modifier = modifier.weight(1f)
+                    )
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     TextButton(onClick = onDismiss) { Text("Cancel") }
                     Button(onClick = {
-                        onSubmit(event.value)
+                        onSubmit(event)
                     }) { Text("Create") }
                 }
             }

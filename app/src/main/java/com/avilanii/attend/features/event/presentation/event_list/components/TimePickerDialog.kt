@@ -37,7 +37,7 @@ fun TimePickerDialog(
 @Composable
 private fun PreviewTimePickerDialog() {
     AttenDTheme {
-        TimePickerDialog(
+        TimePickerDialog (
             onDismiss = {},
             onConfirm = {}
         ) { TimePicker(
