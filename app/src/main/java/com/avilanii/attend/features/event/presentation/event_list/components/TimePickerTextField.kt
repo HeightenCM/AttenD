@@ -5,7 +5,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -17,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.avilanii.attend.ui.theme.AttenDTheme
@@ -27,6 +25,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerTextField(
+    eventTime: LocalTime,
     onChoseValue: (LocalTime) -> Unit,
     modifier: Modifier = Modifier) {
     val fieldColor = if(isSystemInDarkTheme()) {
@@ -34,10 +33,9 @@ fun TimePickerTextField(
     } else {
         Color.Black
     }
-    val time = LocalTime.now()
     var isDialogOpen by remember { mutableStateOf(false) }
-    var timePickerState by remember { mutableStateOf(TimePickerState(time.hour, time.minute, false)) }
-    var selectedTime by remember { mutableStateOf(time) }
+    var timePickerState by remember { mutableStateOf(TimePickerState(eventTime.hour, eventTime.minute, false)) }
+    var selectedTime by remember { mutableStateOf(eventTime) }
 
     if (isDialogOpen) {
         TimePickerDialog (
@@ -65,7 +63,7 @@ fun TimePickerTextField(
         readOnly = true,
         enabled = false,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            disabledTextColor = LocalContentColor.current,
+            disabledTextColor = fieldColor,
             disabledBorderColor = fieldColor,
             disabledLabelColor = fieldColor),
         modifier = modifier
@@ -79,6 +77,7 @@ fun TimePickerTextField(
 private fun PreviewTimePickerTextField() {
     AttenDTheme {
         TimePickerTextField(
+            eventTime = LocalTime.now(),
             onChoseValue = {},
         )
     }

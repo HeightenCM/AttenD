@@ -18,8 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,12 +30,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.avilanii.attend.features.event.presentation.models.EventUi
 import com.avilanii.attend.ui.theme.AttenDTheme
+import java.time.LocalDate
+import java.time.LocalTime
 
 @Composable
 fun CreateEventDialog(
+    eventData: EventUi,
     onDismiss: () -> Unit,
-    onSubmit: (EventUi) -> Unit,
+    onSubmit: (String, Int, LocalDate, LocalTime) -> Unit,
     modifier: Modifier = Modifier) {
+    var eventName by rememberSaveable { mutableStateOf(eventData.name) }
+    var eventBudget by rememberSaveable { mutableIntStateOf(eventData.budget) }
+    var eventDate by rememberSaveable { mutableStateOf(eventData.dateTime.value.toLocalDate())}
+    var eventTime by rememberSaveable { mutableStateOf(eventData.dateTime.value.toLocalTime()) }
+
     Dialog(
         onDismissRequest = onDismiss
     ) {
@@ -42,7 +51,6 @@ fun CreateEventDialog(
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.padding(16.dp).fillMaxWidth()
         ) {
-            var event by remember { mutableStateOf(EventUi()) }
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -58,23 +66,19 @@ fun CreateEventDialog(
                     style = MaterialTheme.typography.headlineSmall
                 )
                 OutlinedTextField(
-                    value = event.name,
+                    value = eventName,
                     onValueChange = { newValue ->
-                        event.copy(
-                            name = newValue
-                        )
+                        eventName = newValue
                     },
                     label = {
                         Text("Event name")
                     }
                 )
                 OutlinedTextField(
-                    value = event.budget.toString(),
+                    value = eventBudget.toString(),
                     onValueChange = { newValue ->
                         if (newValue.all { it.isDigit() }) {
-                            event.copy(
-                                budget = newValue.toInt()
-                            )
+                            eventBudget = newValue.toInt()
                         }
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -87,12 +91,14 @@ fun CreateEventDialog(
                     modifier = modifier.fillMaxWidth()
                 ) {
                     TimePickerTextField(
+                        eventTime = eventTime,
                         onChoseValue = {
 
                         },
                         modifier = modifier.weight(1f)
                     )
                     DatePickerTextField(
+                        eventDate = eventDate,
                         onChoseValue = {
 
                         },
@@ -105,7 +111,7 @@ fun CreateEventDialog(
                 ) {
                     TextButton(onClick = onDismiss) { Text("Cancel") }
                     Button(onClick = {
-                        onSubmit(event)
+                        onSubmit(eventName, eventBudget, eventDate, eventTime)
                     }) { Text("Create") }
                 }
             }
@@ -118,7 +124,10 @@ fun CreateEventDialog(
 private fun PreviewCreateEventDialog() {
     AttenDTheme {
         CreateEventDialog(
-            onSubmit = {},
+            eventData = EventUi(),
+            onSubmit = { eventName, eventBudget, eventDate, eventTime ->
+
+            },
             onDismiss = {}
         )
     }

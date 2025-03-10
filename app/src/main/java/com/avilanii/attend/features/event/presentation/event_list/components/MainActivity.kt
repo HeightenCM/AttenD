@@ -1,4 +1,4 @@
-package com.avilanii.attend
+package com.avilanii.attend.features.event.presentation.event_list.components
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

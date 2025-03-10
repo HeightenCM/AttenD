@@ -26,6 +26,7 @@ import com.avilanii.attend.features.event.presentation.event_list.components.Cre
 import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventFAB
 import com.avilanii.attend.features.event.presentation.event_list.components.EventListItem
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
+import com.avilanii.attend.features.event.presentation.models.EventUi
 import com.avilanii.attend.features.event.presentation.models.toDisplayableDateTime
 import com.avilanii.attend.ui.theme.AttenDTheme
 import java.time.LocalDateTime
@@ -79,9 +80,11 @@ fun EventListScreen(
                     onDismiss = {
                         onAction(EventListAction.OnDismissCreateEventDialog)
                     },
-                    onSubmit = { event ->
-                        onAction(EventListAction.OnCreatedEvent(event))
-                    }
+                    onSubmit = { eventName, eventBudget, eventDate, eventTime ->
+                        onAction(EventListAction.OnCreatedEvent(eventName, eventBudget, eventDate, eventTime))
+                    },
+                    eventData = EventUi(),
+                    modifier = modifier
                 )
             }
         }

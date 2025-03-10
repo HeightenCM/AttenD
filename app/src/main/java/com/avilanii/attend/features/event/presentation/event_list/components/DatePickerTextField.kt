@@ -21,12 +21,14 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.avilanii.attend.ui.theme.AttenDTheme
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerTextField(
+    eventDate: LocalDate,
     onChoseValue: (LocalDate) -> Unit,
     modifier: Modifier = Modifier) {
     val fieldColor = if(isSystemInDarkTheme()) {
@@ -35,7 +37,8 @@ fun DatePickerTextField(
         Color.Black
     }
     var isDialogOpen by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf<Long?>(System.currentTimeMillis()) }
+    var selectedDate by remember { mutableStateOf<Long?>(eventDate.atStartOfDay().toInstant(
+        ZoneOffset.UTC).toEpochMilli()) }
     if(isDialogOpen) {
         DatePickerModal(
             selectedDate = selectedDate,
@@ -56,7 +59,7 @@ fun DatePickerTextField(
         readOnly = true,
         enabled = false,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            disabledTextColor = LocalContentColor.current,
+            disabledTextColor = fieldColor,
             disabledBorderColor = fieldColor,
             disabledLabelColor = fieldColor),
         modifier = modifier
@@ -71,6 +74,7 @@ fun DatePickerTextField(
 private fun PreviewDatePickerTextField() {
     AttenDTheme {
         DatePickerTextField(
+            eventDate = LocalDate.now(),
             onChoseValue = { value ->
                 Log.wtf("date", value.toString())
             }
