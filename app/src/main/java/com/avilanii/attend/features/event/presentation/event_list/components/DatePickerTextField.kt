@@ -55,7 +55,7 @@ fun DatePickerTextField(
             val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
             onChoseValue(LocalDate.parse(newValue, formatter))
         },
-        label = { Text("Event time") },
+        label = { Text("Event date") },
         readOnly = true,
         enabled = false,
         colors = TextFieldDefaults.outlinedTextFieldColors(
