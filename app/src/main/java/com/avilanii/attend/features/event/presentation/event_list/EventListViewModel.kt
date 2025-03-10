@@ -83,15 +83,18 @@ class EventListViewModel(
                 .createEvent(
                     eventName = eventName,
                     eventBudget = eventBudget,
-                    eventDateTime = eventDateTime
+                    eventDateTime = eventDateTime.toString()
                 )
-                .onSuccess {
-                    TODO()
+                .onSuccess { eventReceived ->
+                    _state.update {
+                        it.copy(
+                            events = it.events + eventReceived.toEventUi()
+                        )
+                    }
                 }
-                .onError {
-                    TODO()
+                .onError { error ->
+                    _events.send(EventListEvent.Error(error))
                 }
         }
-        loadEvents()
     }
 }
