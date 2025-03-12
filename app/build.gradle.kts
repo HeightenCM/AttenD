@@ -21,7 +21,7 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField("String", "BASE_API_URL", "\"localhost:5173/\"")
+            buildConfigField("String", "BASE_API_URL", "\"https://10.0.2.2:8080/\"")
         }
         release {
             isMinifyEnabled = false
@@ -29,7 +29,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_API_URL", "\"localhost:5173/\"")
+            buildConfigField("String", "BASE_API_URL", "\"https://10.0.2.2:8080/\"")
         }
     }
     compileOptions {
