@@ -100,7 +100,7 @@ private fun EventListScreenPreview() {
         EventListScreen(
             state = EventListState(
                 events = (1..50).map {
-                    previewEvent.copy(id = it, dateTime = LocalDateTime.now().plusDays(1).toDisplayableDateTime())
+                    previewEvent.copy(id = it, dateTime = LocalDateTime.now().plusMinutes(1).toDisplayableDateTime())
                 }
             ),
             modifier = Modifier.background(MaterialTheme.colorScheme.background),

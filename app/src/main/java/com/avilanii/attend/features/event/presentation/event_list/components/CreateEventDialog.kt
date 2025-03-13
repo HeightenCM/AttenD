@@ -92,15 +92,15 @@ fun CreateEventDialog(
                 ) {
                     TimePickerTextField(
                         eventTime = eventTime,
-                        onChoseValue = {
-
+                        onChoseValue = { newTime ->
+                            eventTime = newTime
                         },
                         modifier = modifier.weight(1f)
                     )
                     DatePickerTextField(
                         eventDate = eventDate,
-                        onChoseValue = {
-
+                        onChoseValue = { newDate ->
+                            eventDate = newDate
                         },
                         modifier = modifier.weight(1f)
                     )
