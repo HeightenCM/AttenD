@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class EventDTO (
     val id: Int? = null,
     val name: String,
-    val dateTime: String,
-    val budget: Int
+    val budget: Int,
+    val dateTime: String
+
 )

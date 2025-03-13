@@ -38,11 +38,17 @@ class EventListViewModel(
                     isCreatingEvent = true
                 )
             }
-            is EventListAction.OnCreatedEvent -> createEvent(
+            is EventListAction.OnCreatedEvent -> {
+                createEvent(
                 action.eventName,
                 action.eventBudget,
-                LocalDateTime.of(action.eventDate, action.eventTime)
-            )
+                LocalDateTime.of(action.eventDate, action.eventTime))
+                _state.update {
+                    it.copy(
+                        isCreatingEvent = false
+                    )
+                }
+            }
             is EventListAction.OnDismissCreateEventDialog -> _state.update {
                 it.copy(
                     isCreatingEvent = false
