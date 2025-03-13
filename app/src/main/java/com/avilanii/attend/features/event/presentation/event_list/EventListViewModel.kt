@@ -62,11 +62,11 @@ class EventListViewModel(
 
             eventDataSource
                 .getEvents()
-                .onSuccess { coins ->
+                .onSuccess { events ->
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            events = coins.map { it.toEventUi() }
+                            events = events.map { it.toEventUi() }
                         )
                     }
                 }

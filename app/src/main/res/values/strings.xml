@@ -3,6 +3,6 @@
     <string name="error_request_timeout">Request timeout</string>
     <string name="error_too_many_requests">Too many request</string>
     <string name="error_no_internet">No internet connection</string>
-    <string name="error_unknown">Oops, something bad happened</string>
+    <string name="error_unknown">An unknown error has occurred</string>
     <string name="error_serialization">Serialization error</string>
 </resources>

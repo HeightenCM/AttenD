@@ -14,7 +14,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import java.time.LocalDateTime
 
 class RemoteEventDataSource(
     private val httpClient: HttpClient
