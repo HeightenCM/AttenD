@@ -4,8 +4,9 @@ import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -19,10 +20,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.avilanii.attend.ui.theme.AttenDTheme
-import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
+import java.time.ZoneId
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,24 +37,29 @@ fun DatePickerTextField(
         Color.Black
     }
     var isDialogOpen by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf<Long?>(eventDate.atStartOfDay().toInstant(
-        ZoneOffset.UTC).toEpochMilli()) }
+    var datePickerState by remember { mutableStateOf(DatePickerState(
+        initialSelectedDateMillis = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli(),
+        locale = Locale.getDefault()
+    )) }
+    var selectedDate by remember { mutableStateOf(eventDate) }
+
     if(isDialogOpen) {
         DatePickerModal(
-            selectedDate = selectedDate,
-            onDateSelected = {
-                selectedDate = it
+            onConfirm = {
                 isDialogOpen = false
+                selectedDate = datePickerState.selectedDateMillis.let{Instant.ofEpochMilli(it!!).atZone(ZoneId.systemDefault()).toLocalDate()}
+                onChoseValue(selectedDate)
             },
             onDismiss = { isDialogOpen = false }
-        )
+        ) {
+            DatePicker(
+                state = datePickerState
+            )
+        }
     }
     OutlinedTextField(
-        value = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault()).format(selectedDate),
-        onValueChange = { newValue ->
-            val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
-            onChoseValue(LocalDate.parse(newValue, formatter))
-        },
+        value = selectedDate.toString(),
+        onValueChange = {},
         label = { Text("Event date") },
         readOnly = true,
         enabled = false,

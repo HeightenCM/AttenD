@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -20,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.avilanii.attend.ui.theme.AttenDTheme
 import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,10 +54,8 @@ fun TimePickerTextField(
     }
 
     OutlinedTextField(
-        value = selectedTime.hour.toString()+":"+selectedTime.minute.toString(),
-        onValueChange = { newValue ->
-            onChoseValue(LocalTime.parse(newValue.toString(), DateTimeFormatter.ofPattern("HH:mm")))
-        },
+        value = selectedTime.truncatedTo(ChronoUnit.MINUTES).toString(),
+        onValueChange = {},
         label = { Text("Event time") },
         readOnly = true,
         enabled = false,
