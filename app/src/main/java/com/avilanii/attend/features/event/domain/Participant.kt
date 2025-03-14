@@ -17,3 +17,15 @@ data class Email(val value: String) {
 enum class ParticipantStatus{
     PENDING, ACCEPTED, REJECTED
 }
+
+fun String.toParticipantEmail(): Email{
+    return Email(this)
+}
+
+fun Int.toParticipantStatus(): ParticipantStatus{
+    return when(this){
+        0 -> ParticipantStatus.ACCEPTED
+        1 -> ParticipantStatus.PENDING
+        else -> ParticipantStatus.REJECTED
+    }
+}

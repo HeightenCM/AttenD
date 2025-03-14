@@ -17,7 +17,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ParticipantListViewModel(
-    private val participantDataSource: ParticipantDataSource
+    private val participantDataSource: ParticipantDataSource,
+    private val eventId: Int
 ): ViewModel() {
     private val _state = MutableStateFlow(ParticipantListState())
     val state = _state
@@ -61,7 +62,7 @@ class ParticipantListViewModel(
             }
 
             participantDataSource
-                .getParticipants()
+                .getParticipants(eventId)
                 .onSuccess { participants ->
                     _state.update {
                         it.copy(
@@ -81,6 +82,7 @@ class ParticipantListViewModel(
         viewModelScope.launch {
             participantDataSource
                 .addParticipant(
+                    eventId = eventId,
                     name = name,
                     email = email
                 )

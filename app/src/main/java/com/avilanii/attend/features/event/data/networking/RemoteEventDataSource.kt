@@ -1,6 +1,5 @@
 package com.avilanii.attend.features.event.data.networking
 
-import android.util.Log
 import com.avilanii.attend.core.data.constructUrl
 import com.avilanii.attend.core.data.safeCall
 import com.avilanii.attend.core.domain.NetworkError

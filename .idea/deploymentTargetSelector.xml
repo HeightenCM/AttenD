@@ -8,9 +8,6 @@
       <SelectionState runConfigName="PreviewParticipantsListScreen - Dark">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="PreviewParticipantsListItem - Dark">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
     </selectionStates>
   </component>
 </project>
