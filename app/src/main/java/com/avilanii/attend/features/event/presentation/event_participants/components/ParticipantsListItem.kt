@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.avilanii.attend.features.event.domain.Email
+import com.avilanii.attend.core.domain.models.Email
 import com.avilanii.attend.features.event.domain.Participant
 import com.avilanii.attend.features.event.domain.ParticipantStatus
 import com.avilanii.attend.features.event.presentation.models.ParticipantUi

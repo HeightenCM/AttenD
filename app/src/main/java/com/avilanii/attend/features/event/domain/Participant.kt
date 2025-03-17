@@ -1,6 +1,6 @@
 package com.avilanii.attend.features.event.domain
 
-import android.util.Patterns
+import com.avilanii.attend.core.domain.models.Email
 
 data class Participant(
     val name: String,
@@ -8,18 +8,8 @@ data class Participant(
     val status: ParticipantStatus
 )
 
-data class Email(val value: String) {
-    init {
-        require(Patterns.EMAIL_ADDRESS.matcher(value).matches()) { "Invalid email format!" }
-    }
-}
-
 enum class ParticipantStatus{
     PENDING, ACCEPTED, REJECTED
-}
-
-fun String.toParticipantEmail(): Email{
-    return Email(this)
 }
 
 fun Int.toParticipantStatus(): ParticipantStatus{
