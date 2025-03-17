@@ -44,7 +44,8 @@ class RemoteParticipantDataSource(
             ){
                 setBody(ParticipantDTO(
                     name = name,
-                    email = email
+                    email = email,
+                    eventId = eventId
                 ))
                 header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken.value)
             }
