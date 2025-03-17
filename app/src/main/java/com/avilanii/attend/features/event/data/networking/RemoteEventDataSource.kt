@@ -5,6 +5,7 @@ import com.avilanii.attend.core.data.safeCall
 import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
+import com.avilanii.attend.core.navigation.SessionManager
 import com.avilanii.attend.features.event.data.mappers.toEvent
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventsResponseDTO
@@ -12,8 +13,10 @@ import com.avilanii.attend.features.event.domain.Event
 import com.avilanii.attend.features.event.domain.EventDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.HttpHeaders
 
 class RemoteEventDataSource(
     private val httpClient: HttpClient
@@ -22,7 +25,9 @@ class RemoteEventDataSource(
         return safeCall<EventsResponseDTO> {
             httpClient.get(
                 urlString = constructUrl("/events")
-            )
+            ) {
+                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken.value)
+            }
         }.map { response ->
             response.data.map { it.toEvent() }
         }
@@ -32,7 +37,9 @@ class RemoteEventDataSource(
         return safeCall<EventDTO> {
             httpClient.get(
                 urlString = constructUrl("/events/$eventId")
-            )
+            ) {
+                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken.value)
+            }
         }.map { response ->
             response.toEvent()
         }
@@ -52,6 +59,7 @@ class RemoteEventDataSource(
                     budget = eventBudget,
                     dateTime = eventDateTime
                 ))
+                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken.value)
             }
         }.map { response ->
             response.toEvent()

@@ -30,14 +30,17 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 
 @Composable
 fun LoginScreen(
-    onAction: (LoginScreenAction)->Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    emailReceived: String = "",
+    passwordReceived: String = "",
+    onAction: (LoginScreenAction)->Unit
+    ) {
     Scaffold(
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->
-        var email by rememberSaveable { mutableStateOf("") }
+        var email by rememberSaveable { mutableStateOf(emailReceived) }
         var isEmailInvalid by rememberSaveable { mutableStateOf(false) }
-        var password by rememberSaveable { mutableStateOf("") }
+        var password by rememberSaveable { mutableStateOf(passwordReceived) }
         var isPasswordInvalid by rememberSaveable { mutableStateOf(false) }
         Column(
             verticalArrangement = Arrangement.Center,

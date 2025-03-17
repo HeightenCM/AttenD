@@ -26,7 +26,7 @@ class ParticipantListViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
-            EventListState()
+            ParticipantListState()
         )
 
     private val _events = Channel<ParticipantListEvent>()
@@ -49,7 +49,7 @@ class ParticipantListViewModel(
             is ParticipantListAction.OnDismissAddParticipantDialog -> _state.update {
                 it.copy(isAddingParticipant = false)
             }
-            is ParticipantListAction.OnParticipantClick -> TODO()
+            is ParticipantListAction.OnParticipantClick -> {}
         }
     }
 

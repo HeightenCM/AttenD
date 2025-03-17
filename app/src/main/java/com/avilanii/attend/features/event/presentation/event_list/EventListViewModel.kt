@@ -54,7 +54,7 @@ class EventListViewModel(
                     isCreatingEvent = false
                 )
             }
-            is EventListAction.OnEventClick -> TODO()
+            is EventListAction.OnEventClick -> {}
         }
     }
 

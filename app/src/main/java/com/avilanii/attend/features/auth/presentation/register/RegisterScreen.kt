@@ -30,8 +30,9 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 
 @Composable
 fun RegisterScreen(
-    onAction: (RegisterScreenAction)->Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    onAction: (RegisterScreenAction)->Unit
+    ) {
     Scaffold(
         modifier = modifier.fillMaxSize()
     ) { paddingValues ->

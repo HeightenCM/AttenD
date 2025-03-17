@@ -5,6 +5,7 @@ import com.avilanii.attend.core.data.safeCall
 import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
+import com.avilanii.attend.core.navigation.SessionManager
 import com.avilanii.attend.features.event.data.mappers.toParticipant
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantsResponseDTO
@@ -12,8 +13,10 @@ import com.avilanii.attend.features.event.domain.Participant
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.HttpHeaders
 
 class RemoteParticipantDataSource(
     private val httpClient: HttpClient
@@ -22,7 +25,9 @@ class RemoteParticipantDataSource(
         return safeCall<ParticipantsResponseDTO> {
             httpClient.get(
                 urlString = constructUrl("events/$eventId/participants")
-            )
+            ){
+                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken.value)
+            }
         }.map { response ->
             response.data.map { it.toParticipant() }
         }
@@ -41,6 +46,7 @@ class RemoteParticipantDataSource(
                     name = name,
                     email = email
                 ))
+                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken.value)
             }
         }.map { response ->
             response.toParticipant()

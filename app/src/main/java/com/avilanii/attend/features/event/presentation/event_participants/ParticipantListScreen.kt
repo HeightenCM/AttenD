@@ -36,8 +36,8 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 @Composable
 fun ParticipantListScreen(
     state: ParticipantListState,
-    onAction: (ParticipantListAction)->Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    onAction: (ParticipantListAction)->Unit) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold (
         topBar = {
