@@ -67,4 +67,6 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
     implementation(libs.bundles.koin)
     implementation(libs.bundles.ktor)
+
+    implementation(libs.bundles.qr)
 }

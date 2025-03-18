@@ -8,7 +8,9 @@ data class EventUi(
     val id: Int = 0,
     val name: String = "",
     val dateTime: DisplayableDateTime = LocalDateTime.now().toDisplayableDateTime(),
-    val budget: Int = 0
+    val budget: Int? = null,
+    val organizer: String? = null,
+    val venue: String? = null
 )
 
 data class DisplayableDateTime(

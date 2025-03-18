@@ -40,7 +40,7 @@ fun CreateEventDialog(
     onSubmit: (String, Int, LocalDate, LocalTime) -> Unit,
     modifier: Modifier = Modifier) {
     var eventName by rememberSaveable { mutableStateOf(eventData.name) }
-    var eventBudget by rememberSaveable { mutableIntStateOf(eventData.budget) }
+    var eventBudget by rememberSaveable { mutableIntStateOf(eventData.budget?:0) }
     var eventDate by rememberSaveable { mutableStateOf(eventData.dateTime.value.toLocalDate())}
     var eventTime by rememberSaveable { mutableStateOf(eventData.dateTime.value.toLocalTime()) }
 
