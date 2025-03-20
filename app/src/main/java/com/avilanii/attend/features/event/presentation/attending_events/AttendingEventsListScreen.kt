@@ -28,11 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.avilanii.attend.features.event.presentation.attending_events.components.AttendingEventsListItem
 import com.avilanii.attend.features.event.presentation.attending_events.components.EventQrDialog
-import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventFAB
-import com.avilanii.attend.features.event.presentation.event_list.components.EventListItem
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
-import com.avilanii.attend.features.event.presentation.models.EventUi
-import com.avilanii.attend.features.event.presentation.models.QrCode
 import com.avilanii.attend.features.event.presentation.models.toDisplayableDateTime
 import com.avilanii.attend.ui.theme.AttenDTheme
 import java.time.LocalDateTime
