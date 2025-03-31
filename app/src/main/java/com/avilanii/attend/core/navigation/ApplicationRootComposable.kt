@@ -30,6 +30,10 @@ import com.avilanii.attend.features.auth.presentation.login.LoginScreen
 import com.avilanii.attend.features.auth.presentation.login.LoginScreenAction
 import com.avilanii.attend.features.auth.presentation.register.RegisterScreen
 import com.avilanii.attend.features.auth.presentation.register.RegisterScreenAction
+import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventListEvent
+import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListAction
+import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListScreen
+import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListViewModel
 import com.avilanii.attend.features.event.presentation.event_list.EventListAction
 import com.avilanii.attend.features.event.presentation.event_list.EventListEvent
 import com.avilanii.attend.features.event.presentation.event_list.EventListScreen
@@ -175,14 +179,47 @@ fun ApplicationRootComposable(
                         is EventListAction.OnCreateEventClick -> {}
                         is EventListAction.OnCreatedEvent -> {}
                         is EventListAction.OnDismissCreateEventDialog -> {}
-                        EventListAction.OnAttendingEventsClick -> {
+                        is EventListAction.OnAttendingEventsClick -> {
                             navController.navigate(AttendingEventsList)
                         }
                     }
                 }
             }
             composable<AttendingEventsList>{
+                val viewModel: AttendingEventsListViewModel = koinViewModel<AttendingEventsListViewModel>()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                val context = LocalContext.current
 
+                ObserveAsEvents(events = viewModel.events) { event ->
+                    when (event) {
+                        is AttendingEventListEvent.Error -> {
+                            Toast.makeText(
+                                context,
+                                event.error.toString(context),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+
+                AttendingEventsListScreen(
+                    modifier = modifier,
+                    state = state,
+                    bottomNavBarItems = bottomNavBarItems
+                ) { action ->
+                    viewModel.onAction(action)
+                    when (action){
+                        is AttendingEventsListAction.OnAcceptEventInvitationClick -> {}
+                        is AttendingEventsListAction.OnAddEventQrClick -> {}
+                        is AttendingEventsListAction.OnDismissAddEventQrDialog -> {}
+                        is AttendingEventsListAction.OnDismissEventInspectDialog -> {}
+                        is AttendingEventsListAction.OnEventClick -> {}
+                        is AttendingEventsListAction.OnOrganizingEventsClick -> {
+                            navController.navigate(EventList)
+                        }
+                        is AttendingEventsListAction.OnRejectEventInvitationClick -> {}
+                    }
+                }
             }
 
             composable<Participants>{

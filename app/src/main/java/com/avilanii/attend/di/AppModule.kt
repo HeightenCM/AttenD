@@ -3,8 +3,10 @@ package com.avilanii.attend.di
 import com.avilanii.attend.core.data.HttpClientFactory
 import com.avilanii.attend.features.auth.data.networking.RemoteAuthDataSource
 import com.avilanii.attend.features.auth.domain.AuthDataSource
+import com.avilanii.attend.features.event.data.networking.RemoteAttendingEventDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteEventDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteParticipantDataSource
+import com.avilanii.attend.features.event.domain.AttendingEventDataSource
 import com.avilanii.attend.features.event.domain.EventDataSource
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListViewModel
@@ -20,6 +22,7 @@ import org.koin.dsl.module
 val appModule = module {
     single { HttpClientFactory.create(CIO.create()) }
     singleOf(::RemoteEventDataSource).bind<EventDataSource>()
+    singleOf(::RemoteAttendingEventDataSource).bind<AttendingEventDataSource>()
     singleOf(::RemoteParticipantDataSource).bind<ParticipantDataSource>()
     singleOf(::RemoteAuthDataSource).bind<AuthDataSource>()
 

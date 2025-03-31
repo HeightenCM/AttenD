@@ -68,7 +68,7 @@ class AttendingEventsListViewModel(
                     _state.update {
                         it.copy(
                             isLoading = false,
-                            events = events.map { it.toEventUi() }//TODO()
+                            events = events.map { it.toEventUi() }
                         )
                     }
                 }
@@ -88,7 +88,7 @@ class AttendingEventsListViewModel(
                 .onSuccess { eventReceived ->
                     _state.update {
                         it.copy(
-                            events = it.events + eventReceived.toEventUi() //TODO()
+                            events = it.events + eventReceived.toEventUi()
                         )
                     }
                 }
