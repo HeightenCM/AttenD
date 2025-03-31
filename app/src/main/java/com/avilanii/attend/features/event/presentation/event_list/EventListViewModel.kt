@@ -55,6 +55,7 @@ class EventListViewModel(
                 )
             }
             is EventListAction.OnEventClick -> {}
+            is EventListAction.OnAttendingEventsClick -> {}
         }
     }
 

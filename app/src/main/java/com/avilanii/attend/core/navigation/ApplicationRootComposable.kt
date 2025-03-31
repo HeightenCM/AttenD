@@ -1,6 +1,13 @@
 package com.avilanii.attend.core.navigation
 
 import android.widget.Toast
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -29,7 +36,6 @@ import com.avilanii.attend.features.event.presentation.event_list.EventListScree
 import com.avilanii.attend.features.event.presentation.event_list.EventListViewModel
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListEvent
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListScreen
-import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListState
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -122,6 +128,23 @@ fun ApplicationRootComposable(
         navigation<Home>(
             startDestination = EventList
         ) {
+            val bottomNavBarItems = listOf(
+                BottomNavigationItem(
+                    title = "Organizing",
+                    selectedIcon = Icons.Filled.Home,
+                    unselectedIcon = Icons.Outlined.Home
+                ),
+                BottomNavigationItem(
+                    title = "Attending",
+                    selectedIcon = Icons.Filled.Email,
+                    unselectedIcon = Icons.Outlined.Email
+                ),
+                BottomNavigationItem(
+                    title = "Account",
+                    selectedIcon = Icons.Filled.AccountCircle,
+                    unselectedIcon = Icons.Outlined.AccountCircle
+                ),
+            )
             composable<EventList> {
                 val viewModel: EventListViewModel = koinViewModel<EventListViewModel>()
                 val state by viewModel.state.collectAsStateWithLifecycle()
@@ -141,7 +164,8 @@ fun ApplicationRootComposable(
 
                 EventListScreen(
                     modifier = modifier,
-                    state = state
+                    state = state,
+                    bottomNavBarItems = bottomNavBarItems
                 ) { action ->
                     viewModel.onAction(action)
                     when (action){
@@ -151,9 +175,16 @@ fun ApplicationRootComposable(
                         is EventListAction.OnCreateEventClick -> {}
                         is EventListAction.OnCreatedEvent -> {}
                         is EventListAction.OnDismissCreateEventDialog -> {}
+                        EventListAction.OnAttendingEventsClick -> {
+                            navController.navigate(AttendingEventsList)
+                        }
                     }
                 }
             }
+            composable<AttendingEventsList>{
+
+            }
+
             composable<Participants>{
                 val args = it.toRoute<Participants>()
                 val viewModel: ParticipantListViewModel = koinViewModel<ParticipantListViewModel>(parameters = {parametersOf(args.eventId)})
@@ -185,6 +216,8 @@ fun ApplicationRootComposable(
 
 @Serializable
 data object EventList
+@Serializable
+data object AttendingEventsList
 @Serializable
 data object Home
 @Serializable

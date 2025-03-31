@@ -8,10 +8,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.avilanii.attend.core.navigation.BottomNavigationItem
 import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventDialog
 import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventFAB
 import com.avilanii.attend.features.event.presentation.event_list.components.EventListItem
@@ -36,12 +47,13 @@ import java.time.LocalDateTime
 fun EventListScreen(
     modifier: Modifier = Modifier,
     state: EventListState,
+    bottomNavBarItems: List<BottomNavigationItem>,
     onAction: (EventListAction)->Unit) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     Scaffold (
         topBar = {
             TopAppBar(
-                title = { Text("Events") },
+                title = { Text("Organizing events") },
                 scrollBehavior = scrollBehavior
             )
         },
@@ -49,6 +61,27 @@ fun EventListScreen(
             CreateEventFAB {
                 onAction(EventListAction.OnCreateEventClick)
             }
+        },
+        bottomBar = {
+            NavigationBar {
+                bottomNavBarItems.forEachIndexed { index, item ->
+                    NavigationBarItem(
+                        selected = index == 0,
+                        onClick = {onAction(EventListAction.OnAttendingEventsClick)},
+                        icon = {
+                            Icon(
+                                imageVector = if (index == 0)
+                                    item.selectedIcon
+                                else
+                                    item.unselectedIcon,
+                                contentDescription = item.title
+                            )
+                        },
+                        label = {Text(item.title)}
+                    )
+                }
+            }
+
         }
     ){ paddingValues ->
         if (state.isLoading) {
@@ -104,6 +137,23 @@ private fun EventListScreenPreview() {
                 }
             ),
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            bottomNavBarItems = listOf(
+                BottomNavigationItem(
+                    title = "Organizing",
+                    selectedIcon = Icons.Filled.Home,
+                    unselectedIcon = Icons.Outlined.Home
+                ),
+                BottomNavigationItem(
+                    title = "Attending",
+                    selectedIcon = Icons.Filled.Email,
+                    unselectedIcon = Icons.Outlined.Email
+                ),
+                BottomNavigationItem(
+                    title = "Account",
+                    selectedIcon = Icons.Filled.AccountCircle,
+                    unselectedIcon = Icons.Outlined.AccountCircle
+                ),
+            ),
             onAction = {}
         )
     }

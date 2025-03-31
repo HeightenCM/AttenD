@@ -10,7 +10,8 @@ data class EventUi(
     val dateTime: DisplayableDateTime = LocalDateTime.now().toDisplayableDateTime(),
     val budget: Int? = null,
     val organizer: String? = null,
-    val venue: String? = null
+    val venue: String? = null,
+    val isPending: Boolean? = null
 )
 
 data class DisplayableDateTime(
@@ -23,7 +24,10 @@ fun Event.toEventUi():EventUi{
         id = this.id,
         name = this.name,
         dateTime = this.dateTime.toDisplayableDateTime(),
-        budget = this.budget)
+        budget = this.budget,
+        organizer = this.organizerName,
+        venue = this.venue
+    )
 }
 
 fun LocalDateTime.toDisplayableDateTime(): DisplayableDateTime{
