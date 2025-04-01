@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -49,7 +48,7 @@ class AttendingEventsListViewModel(
                     isInspectingEvent = true
                 )
             }
-            is AttendingEventsListAction.OnOrganizingEventsClick -> {}
+            is AttendingEventsListAction.OnNavigateClick -> {}
             is AttendingEventsListAction.OnAcceptEventInvitationClick -> {
                 respondToEvent(action.eventId, true)
             }

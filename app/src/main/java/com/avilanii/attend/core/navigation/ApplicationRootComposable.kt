@@ -179,8 +179,12 @@ fun ApplicationRootComposable(
                         is EventListAction.OnCreateEventClick -> {}
                         is EventListAction.OnCreatedEvent -> {}
                         is EventListAction.OnDismissCreateEventDialog -> {}
-                        is EventListAction.OnAttendingEventsClick -> {
-                            navController.navigate(AttendingEventsList)
+                        is EventListAction.OnNavigateClick -> {
+                            when (action.index){
+                                0 -> {}
+                                1 -> navController.navigate(AttendingEventsList)
+                                2 -> {TODO("Account management")}
+                            }
                         }
                     }
                 }
@@ -214,8 +218,12 @@ fun ApplicationRootComposable(
                         is AttendingEventsListAction.OnDismissAddEventQrDialog -> {}
                         is AttendingEventsListAction.OnDismissEventInspectDialog -> {}
                         is AttendingEventsListAction.OnEventClick -> {}
-                        is AttendingEventsListAction.OnOrganizingEventsClick -> {
-                            navController.navigate(EventList)
+                        is AttendingEventsListAction.OnNavigateClick -> {
+                            when (action.index){
+                                0 -> navController.navigate(EventList)
+                                1 -> {}
+                                2 -> {TODO("Account management")}
+                            }
                         }
                         is AttendingEventsListAction.OnRejectEventInvitationClick -> {}
                     }

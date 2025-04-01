@@ -14,5 +14,5 @@ sealed interface EventListAction {
         val eventDate: LocalDate,
         val eventTime: LocalTime
         ): EventListAction
-    data object OnAttendingEventsClick: EventListAction
+    data class OnNavigateClick(val index: Int): EventListAction
 }

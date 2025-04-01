@@ -72,7 +72,7 @@ fun AttendingEventsListScreen(
                 bottomNavBarItems.forEachIndexed { index, item ->
                     NavigationBarItem(
                         selected = index == 1,
-                        onClick = {onAction(AttendingEventsListAction.OnOrganizingEventsClick)},
+                        onClick = {onAction(AttendingEventsListAction.OnNavigateClick(index))},
                         icon = {
                             Icon(
                                 imageVector = if (index == 1)
@@ -121,7 +121,7 @@ fun AttendingEventsListScreen(
             if (state.isInspectingEvent){
                 EventQrDialog(
                     eventUi = state.selectedEvent!!,
-                    qrCode = state.selectedEventQrCode!!
+                    qrCode = state.selectedEvent.name
                 ) {
                     onAction(AttendingEventsListAction.OnDismissAddEventQrDialog)
                 }

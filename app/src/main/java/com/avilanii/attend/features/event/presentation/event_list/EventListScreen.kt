@@ -67,7 +67,7 @@ fun EventListScreen(
                 bottomNavBarItems.forEachIndexed { index, item ->
                     NavigationBarItem(
                         selected = index == 0,
-                        onClick = {onAction(EventListAction.OnAttendingEventsClick)},
+                        onClick = {onAction(EventListAction.OnNavigateClick(index))},
                         icon = {
                             Icon(
                                 imageVector = if (index == 0)

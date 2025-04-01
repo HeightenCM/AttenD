@@ -5,7 +5,7 @@ sealed interface AttendingEventsListAction {
     data object OnDismissEventInspectDialog: AttendingEventsListAction
     data object OnAddEventQrClick: AttendingEventsListAction
     data object OnDismissAddEventQrDialog: AttendingEventsListAction
-    data object OnOrganizingEventsClick: AttendingEventsListAction
+    data class OnNavigateClick(val index: Int): AttendingEventsListAction
     data class OnAcceptEventInvitationClick(val eventId: Int): AttendingEventsListAction
     data class OnRejectEventInvitationClick(val eventId: Int): AttendingEventsListAction
 }
