@@ -18,13 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
 import com.avilanii.attend.features.event.presentation.models.EventUi
-import com.avilanii.attend.features.event.presentation.models.QrCode
 import com.avilanii.attend.ui.theme.AttenDTheme
 
 @Composable
 fun EventQrDialog(
     eventUi: EventUi,
-    qrCode: QrCode,
+    qrCode: String,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit
 ) {
@@ -49,7 +48,7 @@ fun EventQrDialog(
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = modifier.fillMaxWidth()
                 )
-                QrCodeDisplay(qrCode.value, modifier = modifier.fillMaxWidth().padding(10.dp))
+                QrCodeDisplay(qrCode, modifier = modifier.fillMaxWidth().padding(10.dp))
             }
 
         }
@@ -60,7 +59,7 @@ fun EventQrDialog(
 @Composable
 private fun PreviewEventQrDialog() {
     AttenDTheme {
-        EventQrDialog(eventUi = previewEvent, qrCode = QrCode("test")) {
+        EventQrDialog(eventUi = previewEvent, qrCode = "testing") {
 
         }
     }
