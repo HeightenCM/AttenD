@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.reduce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,15 +34,15 @@ class AttendingEventsListViewModel(
     fun onAction(action: AttendingEventsListAction) {
         when (action) {
             is AttendingEventsListAction.OnAddEventQrClick -> {
-                TODO()
+                TODO("Camera functionality for scanning QR")
             }
-            is AttendingEventsListAction.OnDismissEventInspectDialog -> {
-                TODO()
-            }
-            is AttendingEventsListAction.OnDismissAddEventQrDialog -> _state.update {
+            is AttendingEventsListAction.OnDismissEventInspectDialog -> _state.update {
                 it.copy(
-                    TODO()
+                    isInspectingEvent = false
                 )
+            }
+            is AttendingEventsListAction.OnDismissAddEventQrDialog -> {
+                TODO("Add AddEventDialog")
             }
             is AttendingEventsListAction.OnEventClick -> _state.update {
                 it.copy(
@@ -49,8 +50,12 @@ class AttendingEventsListViewModel(
                 )
             }
             is AttendingEventsListAction.OnOrganizingEventsClick -> {}
-            is AttendingEventsListAction.OnAcceptEventInvitationClick -> {}
-            is AttendingEventsListAction.OnRejectEventInvitationClick -> {}
+            is AttendingEventsListAction.OnAcceptEventInvitationClick -> {
+                respondToEvent(action.eventId, true)
+            }
+            is AttendingEventsListAction.OnRejectEventInvitationClick -> {
+                respondToEvent(action.eventId, false)
+            }
         }
     }
 
@@ -90,6 +95,31 @@ class AttendingEventsListViewModel(
                         it.copy(
                             events = it.events + eventReceived.toEventUi()
                         )
+                    }
+                }
+                .onError { error ->
+                    _events.send(AttendingEventListEvent.Error(error))
+                }
+        }
+    }
+
+    private fun respondToEvent(eventId: Int, isAccepted: Boolean){
+        viewModelScope.launch {
+            attendingEventDataSource
+                .respondEvent(
+                    eventId = eventId,
+                    isAccepted = isAccepted
+                )
+                .onSuccess {
+                    _state.update {
+                        if (isAccepted)
+                            it.copy(
+                                TODO()
+                            )
+                        else
+                            it.copy(
+                                TODO()
+                            )
                     }
                 }
                 .onError { error ->

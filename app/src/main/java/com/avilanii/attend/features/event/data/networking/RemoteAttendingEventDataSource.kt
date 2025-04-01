@@ -15,6 +15,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
 
 class RemoteAttendingEventDataSource(
@@ -41,6 +42,20 @@ class RemoteAttendingEventDataSource(
             }
         }.map { response ->
             response.toEvent()
+        }
+    }
+
+    override suspend fun respondEvent(
+        eventId: Int,
+        isAccepted: Boolean
+    ): Result<Unit, NetworkError> {
+        return safeCall<Unit> {
+            httpClient.post(
+                urlString = constructUrl("events/attending/${eventId}")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(isAccepted)
+            }
         }
     }
 }

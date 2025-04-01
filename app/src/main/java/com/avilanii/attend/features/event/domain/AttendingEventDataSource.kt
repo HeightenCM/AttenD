@@ -6,4 +6,5 @@ import com.avilanii.attend.core.domain.Result
 interface AttendingEventDataSource {
     suspend fun getEvents(): Result<List<Event>, NetworkError>
     suspend fun addEvent(qrValue: Int): Result<Event, NetworkError>
+    suspend fun respondEvent(eventId: Int, isAccepted: Boolean): Result<Unit, NetworkError>
 }
