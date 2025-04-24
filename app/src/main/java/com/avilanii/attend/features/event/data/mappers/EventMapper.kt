@@ -9,6 +9,7 @@ fun EventDTO.toEvent(): Event{
         id = id!!,
         name = name,
         budget = budget,
-        dateTime = LocalDateTime.parse(dateTime)
+        dateTime = LocalDateTime.parse(dateTime),
+        isPending = isPending
     )
 }

@@ -110,16 +110,7 @@ class AttendingEventsListViewModel(
                     isAccepted = isAccepted
                 )
                 .onSuccess {
-                    _state.update {
-                        if (isAccepted)
-                            it.copy(
-                                TODO()
-                            )
-                        else
-                            it.copy(
-                                TODO()
-                            )
-                    }
+                    loadEvents()
                 }
                 .onError { error ->
                     _events.send(AttendingEventListEvent.Error(error))

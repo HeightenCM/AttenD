@@ -26,7 +26,8 @@ fun Event.toEventUi():EventUi{
         dateTime = this.dateTime.toDisplayableDateTime(),
         budget = this.budget,
         organizer = this.organizerName,
-        venue = this.venue
+        venue = this.venue,
+        isPending = this.isPending
     )
 }
 
