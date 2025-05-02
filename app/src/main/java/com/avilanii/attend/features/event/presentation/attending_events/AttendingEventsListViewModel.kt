@@ -37,14 +37,18 @@ class AttendingEventsListViewModel(
             }
             is AttendingEventsListAction.OnDismissEventInspectDialog -> _state.update {
                 it.copy(
-                    isInspectingEvent = false
+                    isInspectingEvent = false,
+                    selectedEvent = null,
+                    selectedQr = null
                 )
             }
             is AttendingEventsListAction.OnDismissAddEventQrDialog -> {
                 TODO("Add AddEventDialog")
             }
             is AttendingEventsListAction.OnEventClick -> _state.update {
+                getQr(action.eventUi.id)
                 it.copy(
+                    selectedEvent = action.eventUi,
                     isInspectingEvent = true
                 )
             }
@@ -114,6 +118,19 @@ class AttendingEventsListViewModel(
                 }
                 .onError { error ->
                     _events.send(AttendingEventListEvent.Error(error))
+                }
+        }
+    }
+
+    private fun getQr(eventId: Int){
+        viewModelScope.launch {
+            attendingEventDataSource
+                .getQr(eventId)
+                .onSuccess { receivedQr ->
+                    _state.update { it.copy(selectedQr = receivedQr) }
+                }
+                .onError {
+                    TODO("QR Wallet thingie, dialog for adding external event")
                 }
         }
     }

@@ -8,6 +8,7 @@ data class EventDTO (
     val name: String,
     val budget: Int,
     val dateTime: String,
-    val isPending: Boolean? = null
+    val isPending: Boolean? = null,
+    val organizer: String? = null
 
 )

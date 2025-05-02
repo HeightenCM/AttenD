@@ -11,5 +11,5 @@ data class Participant(
 )
 
 enum class ParticipantStatus{
-    PENDING, ACCEPTED, REJECTED
+    PENDING, ACCEPTED, REJECTED, CHECKED_IN
 }

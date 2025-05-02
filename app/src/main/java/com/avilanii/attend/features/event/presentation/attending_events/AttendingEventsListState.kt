@@ -6,5 +6,6 @@ data class AttendingEventsListState(
     val events: List<EventUi> = emptyList(),
     val isLoading: Boolean = false,
     val isInspectingEvent: Boolean = false,
-    val selectedEvent: EventUi? = null
+    val selectedEvent: EventUi? = null,
+    val selectedQr: String? = null,
 )

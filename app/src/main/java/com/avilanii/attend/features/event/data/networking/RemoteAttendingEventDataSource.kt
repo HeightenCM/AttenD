@@ -11,6 +11,7 @@ import com.avilanii.attend.features.event.data.networking.datatransferobjects.Ev
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventsResponseDTO
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
 import com.avilanii.attend.features.event.domain.Event
+import com.avilanii.attend.features.event.presentation.models.EventUi
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -57,5 +58,22 @@ class RemoteAttendingEventDataSource(
                 setBody(isAccepted)
             }
         }
+    }
+
+    override suspend fun getQr(eventId: Int): Result<String, NetworkError> {
+        return safeCall<String> {
+            httpClient.get(
+                urlString = constructUrl("qr/${eventId}")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+            }
+        }
+    }
+
+    override suspend fun addQr(
+        eventUi: EventUi,
+        qrValue: Long
+    ): Result<Unit, NetworkError> {
+        TODO("Not yet implemented")
     }
 }

@@ -1,6 +1,5 @@
 package com.avilanii.attend.features.event.presentation.attending_events
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -109,7 +108,8 @@ fun AttendingEventsListScreen(
                         modifier = modifier.fillMaxWidth(),
                         eventUi = eventUi
                     ) {
-                        onAction(AttendingEventsListAction.OnEventClick(eventUi.id))
+                        if(eventUi.isPending == false)
+                            onAction(AttendingEventsListAction.OnEventClick(eventUi))
                     }
                     if (eventUi.isPending == true)
                         EventParticipationInterogation(
@@ -119,12 +119,12 @@ fun AttendingEventsListScreen(
                     HorizontalDivider()
                 }
             }
-            if (state.isInspectingEvent){
+            if (state.isInspectingEvent && state.selectedEvent!= null && state.selectedQr!=null){
                 EventQrDialog(
-                    eventUi = state.selectedEvent!!,
-                    qrCode = state.selectedEvent.name
+                    eventUi = state.selectedEvent,
+                    qrCode = state.selectedQr,
                 ) {
-                    onAction(AttendingEventsListAction.OnDismissAddEventQrDialog)
+                    onAction(AttendingEventsListAction.OnDismissEventInspectDialog)
                 }
             }
         }

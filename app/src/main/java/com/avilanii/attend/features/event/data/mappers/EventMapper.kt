@@ -10,6 +10,7 @@ fun EventDTO.toEvent(): Event{
         name = name,
         budget = budget,
         dateTime = LocalDateTime.parse(dateTime),
-        isPending = isPending
+        isPending = isPending,
+        organizerName = organizer
     )
 }

@@ -1,7 +1,9 @@
 package com.avilanii.attend.features.event.presentation.attending_events
 
+import com.avilanii.attend.features.event.presentation.models.EventUi
+
 sealed interface AttendingEventsListAction {
-    data class OnEventClick(val eventId: Int): AttendingEventsListAction
+    data class OnEventClick(val eventUi: EventUi): AttendingEventsListAction
     data object OnDismissEventInspectDialog: AttendingEventsListAction
     data object OnAddEventQrClick: AttendingEventsListAction
     data object OnDismissAddEventQrDialog: AttendingEventsListAction
