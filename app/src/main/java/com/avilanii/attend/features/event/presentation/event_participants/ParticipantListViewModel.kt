@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
-import com.avilanii.attend.features.event.presentation.event_list.EventListState
 import com.avilanii.attend.features.event.presentation.models.toParticipantUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,6 +49,7 @@ class ParticipantListViewModel(
                 it.copy(isAddingParticipant = false)
             }
             is ParticipantListAction.OnParticipantClick -> {}
+            ParticipantListAction.OnMenuIconClick -> {}
         }
     }
 

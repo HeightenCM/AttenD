@@ -10,4 +10,5 @@ sealed interface ParticipantListAction {
         val name: String,
         val email: String
     ): ParticipantListAction
+    data object OnMenuIconClick: ParticipantListAction
 }

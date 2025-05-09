@@ -1,6 +1,8 @@
 package com.avilanii.attend.core.navigation
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Email
@@ -8,13 +10,25 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,6 +52,7 @@ import com.avilanii.attend.features.event.presentation.event_list.EventListActio
 import com.avilanii.attend.features.event.presentation.event_list.EventListEvent
 import com.avilanii.attend.features.event.presentation.event_list.EventListScreen
 import com.avilanii.attend.features.event.presentation.event_list.EventListViewModel
+import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListAction
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListEvent
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListScreen
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListViewModel
@@ -174,7 +189,7 @@ fun ApplicationRootComposable(
                     viewModel.onAction(action)
                     when (action){
                         is EventListAction.OnEventClick -> {
-                            navController.navigate(Participants(action.eventUi.id))
+                            navController.navigate(EventManagement(action.eventUi.id))
                         }
                         is EventListAction.OnCreateEventClick -> {}
                         is EventListAction.OnCreatedEvent -> {}
@@ -229,30 +244,91 @@ fun ApplicationRootComposable(
                     }
                 }
             }
+            composable<EventManagement>{
+                val newNavController = rememberNavController()
+                val eventId = it.arguments?.getInt("eventId")
+                val drawerState = rememberDrawerState(DrawerValue.Closed)
+                val scope = rememberCoroutineScope()
+                var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+                ModalNavigationDrawer(
+                    drawerContent = {
+                        ModalDrawerSheet {
+                            EventMenuItems.entries.forEachIndexed { index, item ->
+                                NavigationDrawerItem(
+                                    label = {
+                                        Text(item.title)
+                                    },
+                                    selected = index == selectedItemIndex,
+                                    onClick = {
+                                        selectedItemIndex = index
+                                        scope.launch {
+                                            drawerState.close()
+                                        }
+                                        newNavController.navigate(item.route){
+                                            popUpTo(EventManagementSubgraph){
+                                                inclusive = true
+                                            }
+                                        }
+                                              },
+                                    icon = {
+                                        Icon(
+                                            imageVector = if (index == selectedItemIndex)
+                                                item.selectedIcon
+                                            else item.unselectedIcon,
+                                            contentDescription = item.title
+                                        )
+                                    }
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                    },
+                    drawerState = drawerState
+                ){
+                    NavHost(
+                        navController = newNavController,
+                        startDestination = EventManagementSubgraph
+                    ) {
+                        navigation<EventManagementSubgraph>(
+                            startDestination = EventMenuRoutes.Participants
+                        ){
+                            composable< EventMenuRoutes.Participants>{
+                                val viewModel: ParticipantListViewModel = koinViewModel<ParticipantListViewModel>(parameters = {parametersOf(eventId)})
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                val context = LocalContext.current
 
-            composable<Participants>{
-                val args = it.toRoute<Participants>()
-                val viewModel: ParticipantListViewModel = koinViewModel<ParticipantListViewModel>(parameters = {parametersOf(args.eventId)})
-                val state by viewModel.state.collectAsStateWithLifecycle()
-                val context = LocalContext.current
+                                ObserveAsEvents(events = viewModel.events) { event ->
+                                    when (event) {
+                                        is ParticipantListEvent.Error -> {
+                                            Toast.makeText(
+                                                context,
+                                                event.error.toString(context),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                }
 
-                ObserveAsEvents(events = viewModel.events) { event ->
-                    when (event) {
-                        is ParticipantListEvent.Error -> {
-                            Toast.makeText(
-                                context,
-                                event.error.toString(context),
-                                Toast.LENGTH_LONG
-                            ).show()
+                                ParticipantListScreen(
+                                    state = state,
+                                    modifier = modifier
+                                ) { action ->
+                                    viewModel.onAction(action)
+                                    when(action){
+                                        is ParticipantListAction.OnAddParticipantClick -> {}
+                                        is ParticipantListAction.OnAddedParticipant -> {}
+                                        is ParticipantListAction.OnDismissAddParticipantDialog -> {}
+                                        is ParticipantListAction.OnMenuIconClick -> {
+                                            scope.launch {
+                                                drawerState.apply { if (isClosed) open() else close() }
+                                            }
+                                        }
+                                        is ParticipantListAction.OnParticipantClick -> {}
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-
-                ParticipantListScreen(
-                    state = state,
-                    modifier = modifier
-                ) { action ->
-                    viewModel.onAction(action)
                 }
             }
         }
@@ -272,7 +348,9 @@ data object Register
 @Serializable
 data object Auth
 @Serializable
-data class Participants(val eventId: Int)
+data class EventManagement(val eventId: Int)
+@Serializable
+data object EventManagementSubgraph
 
 object SessionManager {
     private val _jwtToken = MutableStateFlow<String?>(null)
