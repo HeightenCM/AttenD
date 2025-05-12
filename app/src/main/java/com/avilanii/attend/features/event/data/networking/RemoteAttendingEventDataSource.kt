@@ -11,7 +11,7 @@ import com.avilanii.attend.features.event.data.networking.datatransferobjects.Ev
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventsResponseDTO
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
 import com.avilanii.attend.features.event.domain.Event
-import com.avilanii.attend.features.event.presentation.models.EventUi
+import com.avilanii.attend.features.event.domain.ExternalQR
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -34,7 +34,7 @@ class RemoteAttendingEventDataSource(
         }
     }
 
-    override suspend fun addEvent(qrValue: Int): Result<Event, NetworkError> {
+    override suspend fun addEvent(qrValue: String): Result<Event, NetworkError> {
         return safeCall<EventDTO> {
             httpClient.post(
                 urlString = constructUrl("/events/attending")
@@ -70,10 +70,24 @@ class RemoteAttendingEventDataSource(
         }
     }
 
-    override suspend fun addQr(
-        eventUi: EventUi,
-        qrValue: Long
-    ): Result<Unit, NetworkError> {
-        TODO("Not yet implemented")
+    override suspend fun addExternalQr(externalQR: ExternalQR): Result<ExternalQR, NetworkError> {
+        return safeCall {
+            httpClient.post(
+                urlString = constructUrl("qr")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(externalQR)
+            }
+        }
+    }
+
+    override suspend fun getExternalQrs(): Result<List<ExternalQR>, NetworkError> {
+        return safeCall<List<ExternalQR>> {
+            httpClient.get(
+                urlString = constructUrl("qr")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+            }
+        }
     }
 }

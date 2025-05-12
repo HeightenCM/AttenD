@@ -35,6 +35,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.avilanii.attend.core.navigation.BottomNavigationItem
+import com.avilanii.attend.features.event.domain.ExternalQR
+import com.avilanii.attend.features.event.presentation.attending_events.components.AddExternalEventDialog
 import com.avilanii.attend.features.event.presentation.attending_events.components.AttendingEventsListItem
 import com.avilanii.attend.features.event.presentation.attending_events.components.EventParticipationInterogation
 import com.avilanii.attend.features.event.presentation.attending_events.components.EventQrDialog
@@ -125,6 +127,18 @@ fun AttendingEventsListScreen(
                     qrCode = state.selectedQr,
                 ) {
                     onAction(AttendingEventsListAction.OnDismissEventInspectDialog)
+                }
+            }
+            if (state.isEventNotFound && state.scannedQr != null){
+                AddExternalEventDialog(
+                    onDismiss = { onAction(AttendingEventsListAction.OnAddEventQrClick) }
+                ) { title ->
+                    onAction(AttendingEventsListAction.OnSaveExternalQrClick(
+                        ExternalQR(
+                            value = state.scannedQr,
+                            title = title
+                        )
+                    ))
                 }
             }
         }

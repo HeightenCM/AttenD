@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
+import com.avilanii.attend.features.event.domain.ExternalQR
 import com.avilanii.attend.features.event.presentation.models.toEventUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +60,7 @@ class AttendingEventsListViewModel(
             is AttendingEventsListAction.OnRejectEventInvitationClick -> {
                 respondToEvent(action.eventId, false)
             }
+            is AttendingEventsListAction.OnSaveExternalQrClick -> addExternalQr(action.externalQR)
         }
     }
 
@@ -75,7 +77,6 @@ class AttendingEventsListViewModel(
                 .onSuccess { events ->
                     _state.update {
                         it.copy(
-                            isLoading = false,
                             events = events.map { it.toEventUi() }
                         )
                     }
@@ -84,10 +85,24 @@ class AttendingEventsListViewModel(
                     _state.update { it.copy(isLoading = false) }
                     _events.send(AttendingEventListEvent.Error(error))
                 }
+
+            attendingEventDataSource
+                .getExternalQrs()
+                .onSuccess { externalEvents ->
+                    _state.update {
+                        it.copy(
+                            externalEvents = externalEvents,
+                            isLoading = false
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(AttendingEventListEvent.Error(error))
+                }
         }
     }
 
-    private fun addEvent(qrValue: Int){
+    private fun addEvent(qrValue: String){
         viewModelScope.launch {
             attendingEventDataSource
                 .addEvent(
@@ -102,6 +117,11 @@ class AttendingEventsListViewModel(
                 }
                 .onError { error ->
                     _events.send(AttendingEventListEvent.Error(error))
+                    _state.update {
+                        it.copy(
+                            isEventNotFound = true
+                        )
+                    }
                 }
         }
     }
@@ -129,8 +149,25 @@ class AttendingEventsListViewModel(
                 .onSuccess { receivedQr ->
                     _state.update { it.copy(selectedQr = receivedQr) }
                 }
-                .onError {
-                    TODO("QR Wallet thingie, dialog for adding external event")
+                .onError { error ->
+                    _events.send(AttendingEventListEvent.Error(error))
+                }
+        }
+    }
+
+    private fun addExternalQr(externalQR: ExternalQR){
+        viewModelScope.launch {
+            attendingEventDataSource
+                .addExternalQr(externalQR)
+                .onSuccess { receivedExternalQr ->
+                    _state.update {
+                        it.copy(
+                            externalEvents = it.externalEvents + receivedExternalQr
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(AttendingEventListEvent.Error(error))
                 }
         }
     }

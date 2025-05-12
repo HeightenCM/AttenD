@@ -75,8 +75,19 @@ fun ParticipantListScreen(
                             onDismissRequest = { isEventActionMenuOpen = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Generate Invite QR") },
-                                onClick = { onAction(ParticipantListAction.OnGenerateInviteQrOpenDialog)}
+                                text = { Text("Generate invite QR") },
+                                onClick = {
+                                    onAction(ParticipantListAction.OnGenerateInviteQrOpenDialog)
+                                    isEventActionMenuOpen = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Scan attendee QR") },
+                                onClick = {TODO("Open camera, scan QRs of attendees.")}
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Modify tiers") },
+                                onClick = { TODO("Add a system for attendees to have tiers.") }
                             )
                         }
                     }
