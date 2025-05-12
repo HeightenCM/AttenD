@@ -324,6 +324,8 @@ fun ApplicationRootComposable(
                                             }
                                         }
                                         is ParticipantListAction.OnParticipantClick -> {}
+                                        ParticipantListAction.OnGenerateInviteQrDismissDialog -> {}
+                                        ParticipantListAction.OnGenerateInviteQrOpenDialog -> {}
                                     }
                                 }
                             }

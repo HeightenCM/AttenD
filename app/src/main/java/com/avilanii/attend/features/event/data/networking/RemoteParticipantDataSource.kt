@@ -53,4 +53,14 @@ class RemoteParticipantDataSource(
             response.toParticipant()
         }
     }
+
+    override suspend fun generateQRInvite(eventId: Int): Result<String, NetworkError> {
+        return safeCall<String> {
+            httpClient.get(
+                urlString = constructUrl("qr/invite/${eventId}")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+            }
+        }
+    }
 }

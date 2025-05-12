@@ -11,4 +11,6 @@ sealed interface ParticipantListAction {
         val email: String
     ): ParticipantListAction
     data object OnMenuIconClick: ParticipantListAction
+    data object OnGenerateInviteQrOpenDialog: ParticipantListAction
+    data object OnGenerateInviteQrDismissDialog: ParticipantListAction
 }

@@ -36,20 +36,24 @@ class ParticipantListViewModel(
             is ParticipantListAction.OnAddParticipantClick -> _state.update {
                 it.copy(isAddingParticipant = true)
             }
-            is ParticipantListAction.OnAddedParticipant -> {
-                addParticipant(
+            is ParticipantListAction.OnAddedParticipant -> addParticipant(
                     name = action.name,
                     email = action.email
                 )
-                _state.update {
-                    it.copy(isAddingParticipant = false)
-                }
-            }
             is ParticipantListAction.OnDismissAddParticipantDialog -> _state.update {
                 it.copy(isAddingParticipant = false)
             }
             is ParticipantListAction.OnParticipantClick -> {}
-            ParticipantListAction.OnMenuIconClick -> {}
+            is ParticipantListAction.OnMenuIconClick -> {}
+            is ParticipantListAction.OnGenerateInviteQrDismissDialog -> {
+                _state.update {
+                    it.copy(
+                        isShowingInviteQr = false,
+                        inviteQr = null
+                    )
+                }
+            }
+            is ParticipantListAction.OnGenerateInviteQrOpenDialog -> generateQRInvite()
         }
     }
 
@@ -90,6 +94,27 @@ class ParticipantListViewModel(
                     _state.update {
                         it.copy(
                             participants = it.participants + participantReceived.toParticipantUi()
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(ParticipantListEvent.Error(error))
+                }
+        }
+        _state.update {
+            it.copy(isAddingParticipant = false)
+        }
+    }
+
+    private fun generateQRInvite(){
+        viewModelScope.launch {
+            participantDataSource
+                .generateQRInvite(eventId)
+                .onSuccess { receivedQR ->
+                    _state.update {
+                        it.copy(
+                            inviteQr = receivedQR,
+                            isShowingInviteQr = true
                         )
                     }
                 }
