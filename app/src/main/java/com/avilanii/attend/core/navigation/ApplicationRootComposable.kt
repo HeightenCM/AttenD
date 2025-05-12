@@ -230,7 +230,6 @@ fun ApplicationRootComposable(
                     when (action){
                         is AttendingEventsListAction.OnAcceptEventInvitationClick -> {}
                         is AttendingEventsListAction.OnAddEventQrClick -> {}
-                        is AttendingEventsListAction.OnDismissAddEventQrDialog -> {}
                         is AttendingEventsListAction.OnDismissEventInspectDialog -> {}
                         is AttendingEventsListAction.OnEventClick -> {}
                         is AttendingEventsListAction.OnNavigateClick -> {
@@ -242,6 +241,7 @@ fun ApplicationRootComposable(
                         }
                         is AttendingEventsListAction.OnRejectEventInvitationClick -> {}
                         is AttendingEventsListAction.OnSaveExternalQrClick -> {}
+                        is AttendingEventsListAction.OnDismissSaveExternalQrClick -> {}
                     }
                 }
             }

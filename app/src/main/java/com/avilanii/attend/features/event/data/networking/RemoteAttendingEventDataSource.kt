@@ -40,6 +40,7 @@ class RemoteAttendingEventDataSource(
                 urlString = constructUrl("/events/attending")
             ) {
                 header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(qrValue)
             }
         }.map { response ->
             response.toEvent()

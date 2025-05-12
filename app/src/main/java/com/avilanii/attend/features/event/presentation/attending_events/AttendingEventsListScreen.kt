@@ -1,5 +1,6 @@
 package com.avilanii.attend.features.event.presentation.attending_events
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,8 @@ import com.avilanii.attend.features.event.presentation.attending_events.componen
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
 import com.avilanii.attend.features.event.presentation.models.toDisplayableDateTime
 import com.avilanii.attend.ui.theme.AttenDTheme
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 import java.time.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -62,8 +65,20 @@ fun AttendingEventsListScreen(
             )
         },
         floatingActionButton = {
+            val scanLauncher = rememberLauncherForActivityResult(
+                contract = ScanContract()
+            ) { result ->
+                if (result.contents != null)
+                    onAction(AttendingEventsListAction.OnAddEventQrClick(result.contents))
+            }
             ExtendedFloatingActionButton(
-                onClick = {onAction(AttendingEventsListAction.OnAddEventQrClick)},
+                onClick = {
+                    scanLauncher.launch(ScanOptions().apply {
+                        setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                        setBeepEnabled(true)
+                        setOrientationLocked(true)
+                    })
+                },
                 icon = { Icon(Icons.Filled.Add, "Add attending event icon") },
                 text = { Text("Add event") },
                 containerColor = MaterialTheme.colorScheme.primary
@@ -131,7 +146,7 @@ fun AttendingEventsListScreen(
             }
             if (state.isEventNotFound && state.scannedQr != null){
                 AddExternalEventDialog(
-                    onDismiss = { onAction(AttendingEventsListAction.OnAddEventQrClick) }
+                    onDismiss = { onAction(AttendingEventsListAction.OnDismissSaveExternalQrClick) }
                 ) { title ->
                     onAction(AttendingEventsListAction.OnSaveExternalQrClick(
                         ExternalQR(

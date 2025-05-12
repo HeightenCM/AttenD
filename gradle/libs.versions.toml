@@ -12,6 +12,7 @@ ktor = "2.3.12"
 koin = "3.5.6"
 composeNavigation = "2.8.9"
 zxing = "3.5.3"
+zxingEmbedded = "4.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -40,6 +41,7 @@ androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-ru
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 zxing = {module = "com.google.zxing:core", version.ref = "zxing"}
+zxingEmbedded = {module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingEmbedded"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -75,5 +77,6 @@ ktor = [
     "ktor-serialization-kotlinx-json"
 ]
 qr = [
-    "zxing"
+    "zxing",
+    "zxingEmbedded"
 ]

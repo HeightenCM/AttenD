@@ -33,18 +33,13 @@ class AttendingEventsListViewModel(
 
     fun onAction(action: AttendingEventsListAction) {
         when (action) {
-            is AttendingEventsListAction.OnAddEventQrClick -> {
-                TODO("Camera functionality for scanning QR")
-            }
+            is AttendingEventsListAction.OnAddEventQrClick -> addEvent(action.scannedQr)
             is AttendingEventsListAction.OnDismissEventInspectDialog -> _state.update {
                 it.copy(
                     isInspectingEvent = false,
                     selectedEvent = null,
                     selectedQr = null
                 )
-            }
-            is AttendingEventsListAction.OnDismissAddEventQrDialog -> {
-                TODO("Add AddEventDialog")
             }
             is AttendingEventsListAction.OnEventClick -> _state.update {
                 getQr(action.eventUi.id)
@@ -61,6 +56,11 @@ class AttendingEventsListViewModel(
                 respondToEvent(action.eventId, false)
             }
             is AttendingEventsListAction.OnSaveExternalQrClick -> addExternalQr(action.externalQR)
+            is AttendingEventsListAction.OnDismissSaveExternalQrClick -> _state.update {
+                it.copy(
+
+                )
+            }
         }
     }
 
