@@ -33,7 +33,14 @@ class AttendingEventsListViewModel(
 
     fun onAction(action: AttendingEventsListAction) {
         when (action) {
-            is AttendingEventsListAction.OnAddEventQrClick -> addEvent(action.scannedQr)
+            is AttendingEventsListAction.OnAddEventQrClick -> {
+                addEvent(action.scannedQr)
+                _state.update {
+                    it.copy(
+                        scannedQr = action.scannedQr
+                    )
+                }
+            }
             is AttendingEventsListAction.OnDismissEventInspectDialog -> _state.update {
                 it.copy(
                     isInspectingEvent = false,
@@ -116,11 +123,15 @@ class AttendingEventsListViewModel(
                     }
                 }
                 .onError { error ->
-                    _events.send(AttendingEventListEvent.Error(error))
-                    _state.update {
-                        it.copy(
-                            isEventNotFound = true
-                        )
+                    if (error.name != "NOT_FOUND"){
+                        _events.send(AttendingEventListEvent.Error(error))
+                    }
+                    else {
+                        _state.update {
+                            it.copy(
+                                isEventNotFound = true
+                            )
+                        }
                     }
                 }
         }

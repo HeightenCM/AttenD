@@ -7,4 +7,5 @@ enum class NetworkError : Error {
     SERVER_ERROR,
     SERIALIZATION,
     UNKNOWN,
+    NOT_FOUND
 }
