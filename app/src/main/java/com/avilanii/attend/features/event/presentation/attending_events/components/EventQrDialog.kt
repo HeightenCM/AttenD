@@ -22,7 +22,7 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 
 @Composable
 fun EventQrDialog(
-    eventUi: EventUi,
+    eventTitle: String,
     qrCode: String,
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit
@@ -43,7 +43,7 @@ fun EventQrDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = eventUi.name,
+                    text = eventTitle,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = modifier.fillMaxWidth()
@@ -59,7 +59,7 @@ fun EventQrDialog(
 @Composable
 private fun PreviewEventQrDialog() {
     AttenDTheme {
-        EventQrDialog(eventUi = previewEvent, qrCode = "testing") {
+        EventQrDialog(eventTitle = previewEvent.name, qrCode = "testing") {
 
         }
     }

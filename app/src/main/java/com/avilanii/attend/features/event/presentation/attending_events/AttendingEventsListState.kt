@@ -9,7 +9,7 @@ data class AttendingEventsListState(
     val isLoading: Boolean = false,
     val isInspectingEvent: Boolean = false,
     val isEventNotFound: Boolean = false,
-    val selectedEvent: EventUi? = null,
+    val selectedEventTitle: String? = null,
     val selectedQr: String? = null,
     val scannedQr: String? = null
 )

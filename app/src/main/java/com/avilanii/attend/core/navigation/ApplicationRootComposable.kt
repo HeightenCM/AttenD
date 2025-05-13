@@ -242,6 +242,7 @@ fun ApplicationRootComposable(
                         is AttendingEventsListAction.OnRejectEventInvitationClick -> {}
                         is AttendingEventsListAction.OnSaveExternalQrClick -> {}
                         is AttendingEventsListAction.OnDismissSaveExternalQrClick -> {}
+                        is AttendingEventsListAction.OnExternalEventClick -> {}
                     }
                 }
             }

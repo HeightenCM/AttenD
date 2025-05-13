@@ -41,6 +41,7 @@ import com.avilanii.attend.features.event.presentation.attending_events.componen
 import com.avilanii.attend.features.event.presentation.attending_events.components.AttendingEventsListItem
 import com.avilanii.attend.features.event.presentation.attending_events.components.EventParticipationInterogation
 import com.avilanii.attend.features.event.presentation.attending_events.components.EventQrDialog
+import com.avilanii.attend.features.event.presentation.attending_events.components.ExternalEventListItem
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
 import com.avilanii.attend.features.event.presentation.models.toDisplayableDateTime
 import com.avilanii.attend.ui.theme.AttenDTheme
@@ -76,7 +77,7 @@ fun AttendingEventsListScreen(
                     scanLauncher.launch(ScanOptions().apply {
                         setDesiredBarcodeFormats(ScanOptions.QR_CODE)
                         setBeepEnabled(true)
-                        setOrientationLocked(true)
+                        setOrientationLocked(false)
                     })
                 },
                 icon = { Icon(Icons.Filled.Add, "Add attending event icon") },
@@ -135,10 +136,18 @@ fun AttendingEventsListScreen(
                         )
                     HorizontalDivider()
                 }
+                items(state.externalEvents){ externalEvent ->
+                    ExternalEventListItem(
+                        externalQR = externalEvent
+                    ) {
+                        onAction(AttendingEventsListAction.OnExternalEventClick(externalEvent))
+                    }
+                    HorizontalDivider()
+                }
             }
-            if (state.isInspectingEvent && state.selectedEvent!= null && state.selectedQr!=null){
+            if (state.isInspectingEvent && state.selectedEventTitle!= null && state.selectedQr!=null){
                 EventQrDialog(
-                    eventUi = state.selectedEvent,
+                    eventTitle = state.selectedEventTitle,
                     qrCode = state.selectedQr,
                 ) {
                     onAction(AttendingEventsListAction.OnDismissEventInspectDialog)

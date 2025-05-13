@@ -34,24 +34,24 @@ class AttendingEventsListViewModel(
     fun onAction(action: AttendingEventsListAction) {
         when (action) {
             is AttendingEventsListAction.OnAddEventQrClick -> {
-                addEvent(action.scannedQr)
                 _state.update {
                     it.copy(
                         scannedQr = action.scannedQr
                     )
                 }
+                addEvent(action.scannedQr)
             }
             is AttendingEventsListAction.OnDismissEventInspectDialog -> _state.update {
                 it.copy(
                     isInspectingEvent = false,
-                    selectedEvent = null,
+                    selectedEventTitle = null,
                     selectedQr = null
                 )
             }
             is AttendingEventsListAction.OnEventClick -> _state.update {
                 getQr(action.eventUi.id)
                 it.copy(
-                    selectedEvent = action.eventUi,
+                    selectedEventTitle = action.eventUi.name,
                     isInspectingEvent = true
                 )
             }
@@ -65,7 +65,15 @@ class AttendingEventsListViewModel(
             is AttendingEventsListAction.OnSaveExternalQrClick -> addExternalQr(action.externalQR)
             is AttendingEventsListAction.OnDismissSaveExternalQrClick -> _state.update {
                 it.copy(
-
+                    isEventNotFound = false,
+                    scannedQr = null
+                )
+            }
+            is AttendingEventsListAction.OnExternalEventClick -> _state.update {
+                it.copy(
+                    isInspectingEvent = true,
+                    selectedEventTitle = action.externalQR.title,
+                    selectedQr = action.externalQR.value
                 )
             }
         }
@@ -173,7 +181,9 @@ class AttendingEventsListViewModel(
                 .onSuccess { receivedExternalQr ->
                     _state.update {
                         it.copy(
-                            externalEvents = it.externalEvents + receivedExternalQr
+                            externalEvents = it.externalEvents + receivedExternalQr,
+                            scannedQr = null,
+                            isEventNotFound = false
                         )
                     }
                 }
