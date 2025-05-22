@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
+import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
 import com.avilanii.attend.features.event.presentation.models.toParticipantUi
 import kotlinx.coroutines.channels.Channel
@@ -54,6 +55,13 @@ class ParticipantListViewModel(
                 }
             }
             is ParticipantListAction.OnGenerateInviteQrOpenDialog -> generateQRInvite()
+            is ParticipantListAction.OnScanQrClick -> scanQr(action.qrValue)
+            is ParticipantListAction.OnDismissReviewCheckIn -> _state.update {
+                it.copy(
+                    isReviewingCheckIn = false,
+                    checkInResponse = null
+                )
+            }
         }
     }
 
@@ -120,6 +128,33 @@ class ParticipantListViewModel(
                 }
                 .onError { error ->
                     _events.send(ParticipantListEvent.Error(error))
+                }
+        }
+    }
+
+    private fun scanQr(qrCode: String){
+        viewModelScope.launch {
+            participantDataSource
+                .scanParticipantQr(eventId, qrCode)
+                .onSuccess { checkInResponse ->
+                    _state.update {
+                        it.copy(
+                            checkInResponse = checkInResponse,
+                            isReviewingCheckIn = true
+                        )
+                    }
+                }
+                .onError {
+                    _state.update {
+                        it.copy(
+                            checkInResponse =
+                                CheckInConfirmationDTO(
+                                    message = "We couldn't find the QR for this participant!",
+                                    accepted = false
+                                ),
+                            isReviewingCheckIn = true
+                        )
+                    }
                 }
         }
     }

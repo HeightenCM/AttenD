@@ -13,4 +13,6 @@ sealed interface ParticipantListAction {
     data object OnMenuIconClick: ParticipantListAction
     data object OnGenerateInviteQrOpenDialog: ParticipantListAction
     data object OnGenerateInviteQrDismissDialog: ParticipantListAction
+    data class OnScanQrClick(val qrValue: String): ParticipantListAction
+    data object OnDismissReviewCheckIn: ParticipantListAction
 }

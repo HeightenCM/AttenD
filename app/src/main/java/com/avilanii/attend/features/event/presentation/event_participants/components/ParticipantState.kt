@@ -19,20 +19,17 @@ import com.avilanii.attend.ui.theme.greenBackground
 fun ParticipantState(
     participantStatus: ParticipantStatus,
     modifier: Modifier = Modifier) {
-    val boxColor = if(participantStatus == ParticipantStatus.ACCEPTED){
-        greenBackground
-    } else if (participantStatus == ParticipantStatus.PENDING){
-        Color.Gray
-    } else {
-        MaterialTheme.colorScheme.errorContainer
+    val boxColor = when(participantStatus){
+        ParticipantStatus.PENDING -> Color.Gray
+        ParticipantStatus.ACCEPTED -> greenBackground
+        ParticipantStatus.REJECTED -> MaterialTheme.colorScheme.onErrorContainer
+        ParticipantStatus.CHECKED_IN -> Color.Gray
     }
-    val textColor = if(participantStatus == ParticipantStatus.ACCEPTED){
-        Color.Green
-    } else if (participantStatus == ParticipantStatus.PENDING){
-        Color.Yellow
-    }
-    else {
-        MaterialTheme.colorScheme.onErrorContainer
+    val textColor = when(participantStatus){
+        ParticipantStatus.PENDING -> Color.Yellow
+        ParticipantStatus.ACCEPTED -> Color.Green
+        ParticipantStatus.REJECTED -> Color.Red
+        ParticipantStatus.CHECKED_IN -> Color.Blue
     }
     Box (
         modifier = modifier
@@ -51,7 +48,7 @@ fun ParticipantState(
 private fun PreviewParticipantStatus() {
     AttenDTheme {
         ParticipantState(
-            participantStatus = ParticipantStatus.PENDING
+            participantStatus = ParticipantStatus.CHECKED_IN
         )
     }
 }

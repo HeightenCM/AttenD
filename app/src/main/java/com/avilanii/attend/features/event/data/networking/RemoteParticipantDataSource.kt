@@ -7,6 +7,7 @@ import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
 import com.avilanii.attend.core.navigation.SessionManager
 import com.avilanii.attend.features.event.data.mappers.toParticipant
+import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantsResponseDTO
 import com.avilanii.attend.features.event.domain.Participant
@@ -60,6 +61,17 @@ class RemoteParticipantDataSource(
                 urlString = constructUrl("qr/invite/${eventId}")
             ) {
                 header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+            }
+        }
+    }
+
+    override suspend fun scanParticipantQr(eventId: Int,eventQr: String): Result<CheckInConfirmationDTO, NetworkError> {
+        return safeCall<CheckInConfirmationDTO> {
+            httpClient.get(
+                urlString = constructUrl("events/$eventId/participants/checkin")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(eventQr)
             }
         }
     }

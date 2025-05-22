@@ -58,6 +58,14 @@ fun AttendingEventsListScreen(
     onAction: (AttendingEventsListAction) -> Unit
     ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
+    val scanLauncher = rememberLauncherForActivityResult(
+        contract = ScanContract()
+    ) { result ->
+        if (result.contents != null)
+            onAction(AttendingEventsListAction.OnAddEventQrClick(result.contents))
+    }
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -66,12 +74,6 @@ fun AttendingEventsListScreen(
             )
         },
         floatingActionButton = {
-            val scanLauncher = rememberLauncherForActivityResult(
-                contract = ScanContract()
-            ) { result ->
-                if (result.contents != null)
-                    onAction(AttendingEventsListAction.OnAddEventQrClick(result.contents))
-            }
             ExtendedFloatingActionButton(
                 onClick = {
                     scanLauncher.launch(ScanOptions().apply {

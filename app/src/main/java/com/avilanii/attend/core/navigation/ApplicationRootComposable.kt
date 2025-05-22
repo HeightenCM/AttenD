@@ -326,8 +326,10 @@ fun ApplicationRootComposable(
                                             }
                                         }
                                         is ParticipantListAction.OnParticipantClick -> {}
-                                        ParticipantListAction.OnGenerateInviteQrDismissDialog -> {}
-                                        ParticipantListAction.OnGenerateInviteQrOpenDialog -> {}
+                                        is ParticipantListAction.OnGenerateInviteQrDismissDialog -> {}
+                                        is ParticipantListAction.OnGenerateInviteQrOpenDialog -> {}
+                                        is ParticipantListAction.OnScanQrClick -> {}
+                                        is ParticipantListAction.OnDismissReviewCheckIn -> {}
                                     }
                                 }
                             }

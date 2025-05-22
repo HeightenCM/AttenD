@@ -1,5 +1,6 @@
 package com.avilanii.attend.features.event.presentation.event_participants
 
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,11 +37,15 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.avilanii.attend.features.event.domain.ParticipantStatus
+import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListAction
 import com.avilanii.attend.features.event.presentation.event_participants.components.AddParticipantDialog
+import com.avilanii.attend.features.event.presentation.event_participants.components.CheckInReviewDialog
 import com.avilanii.attend.features.event.presentation.event_participants.components.EventInviteQRDialog
 import com.avilanii.attend.features.event.presentation.event_participants.components.ParticipantListItem
 import com.avilanii.attend.features.event.presentation.event_participants.components.previewParticipant
 import com.avilanii.attend.ui.theme.AttenDTheme
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanOptions
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,6 +55,14 @@ fun ParticipantListScreen(
     onAction: (ParticipantListAction)->Unit) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var isEventActionMenuOpen by remember { mutableStateOf(false) }
+
+    val scanLauncher = rememberLauncherForActivityResult(
+        contract = ScanContract()
+    ) { result ->
+        if (result.contents != null)
+            onAction(ParticipantListAction.OnScanQrClick(result.contents))
+    }
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -83,7 +96,14 @@ fun ParticipantListScreen(
                             )
                             DropdownMenuItem(
                                 text = { Text("Scan attendee QR") },
-                                onClick = {TODO("Open camera, scan QRs of attendees.")}
+                                onClick = {
+                                    isEventActionMenuOpen = false
+                                    scanLauncher.launch(ScanOptions().apply {
+                                        setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                                        setBeepEnabled(true)
+                                        setOrientationLocked(false)
+                                    })
+                                }
                             )
                             DropdownMenuItem(
                                 text = { Text("Modify tiers") },
@@ -144,6 +164,13 @@ fun ParticipantListScreen(
                     qrCode = state.inviteQr
                 ) {
                     onAction(ParticipantListAction.OnGenerateInviteQrDismissDialog)
+                }
+            }
+            if(state.isReviewingCheckIn == true && state.checkInResponse != null){
+                CheckInReviewDialog(
+                    checkInResponse = state.checkInResponse
+                ) {
+                    onAction(ParticipantListAction.OnDismissReviewCheckIn)
                 }
             }
         }
