@@ -10,9 +10,11 @@ import com.avilanii.attend.features.event.data.mappers.toParticipant
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantsResponseDTO
+import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.Participant
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -72,6 +74,41 @@ class RemoteParticipantDataSource(
             ) {
                 header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
                 setBody(eventQr)
+            }
+        }
+    }
+
+    override suspend fun getEventTiers(eventId: Int): Result<List<AttendeeTier>, NetworkError> {
+        return safeCall<List<AttendeeTier>> {
+            httpClient.get(
+                urlString = constructUrl("/events/$eventId/tiers")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+            }
+        }
+    }
+
+    override suspend fun addEventTier(attendeeTier: AttendeeTier, eventId: Int): Result<Unit, NetworkError> {
+        return safeCall {
+            httpClient.post(
+                urlString = constructUrl("events/$eventId/tiers")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(attendeeTier)
+            }
+        }
+    }
+
+    override suspend fun removeEventTier(
+        attendeeTier: AttendeeTier,
+        eventId: Int
+    ): Result<Unit, NetworkError> {
+        return safeCall {
+            httpClient.delete(
+                urlString = constructUrl("events/$eventId/tiers")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(attendeeTier)
             }
         }
     }

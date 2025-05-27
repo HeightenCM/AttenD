@@ -9,4 +9,7 @@ interface ParticipantDataSource {
     suspend fun addParticipant(eventId: Int, name: String, email: String): Result<Participant, NetworkError>
     suspend fun generateQRInvite(eventId: Int): Result<String, NetworkError>
     suspend fun scanParticipantQr(eventId: Int, eventQr: String): Result<CheckInConfirmationDTO, NetworkError>
+    suspend fun getEventTiers(eventId: Int): Result<List<AttendeeTier>, NetworkError>
+    suspend fun addEventTier(attendeeTier: AttendeeTier, eventId: Int): Result<Unit, NetworkError>
+    suspend fun removeEventTier(attendeeTier: AttendeeTier, eventId: Int): Result<Unit, NetworkError>
 }

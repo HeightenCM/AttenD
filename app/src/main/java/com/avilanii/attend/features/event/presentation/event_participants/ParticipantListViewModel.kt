@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
+import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
 import com.avilanii.attend.features.event.presentation.models.toParticipantUi
 import kotlinx.coroutines.channels.Channel
@@ -62,6 +63,14 @@ class ParticipantListViewModel(
                     checkInResponse = null
                 )
             }
+            is ParticipantListAction.OnDismissModifyEventTiersClick -> _state.update {
+                it.copy(
+                    isModifyingAttendeeTiers = false
+                )
+            }
+            is ParticipantListAction.OnModifyEventTiersClick -> loadEventTiers()
+            is ParticipantListAction.OnAddEventTierClick -> addEventTier(action.eventTier)
+            is ParticipantListAction.OnRemoveEventTierClick -> removeEventTier(action.eventTier)
         }
     }
 
@@ -153,6 +162,72 @@ class ParticipantListViewModel(
                                     accepted = false
                                 ),
                             isReviewingCheckIn = true
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun loadEventTiers(){
+        viewModelScope.launch {
+            participantDataSource
+                .getEventTiers(eventId)
+                .onSuccess {  tiers ->
+                    _state.update {
+                        it.copy(
+                            isModifyingAttendeeTiers = true,
+                            eventTiers = tiers
+                        )
+                    }
+                }
+                .onError {  error ->
+                    _events.send(ParticipantListEvent.Error(error))
+                }
+        }
+    }
+
+    private fun addEventTier(eventTier: AttendeeTier){
+        viewModelScope.launch {
+            participantDataSource
+                .addEventTier(
+                    attendeeTier = eventTier,
+                    eventId = eventId
+                )
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            eventTiers = it.eventTiers + eventTier
+                        )
+                    }
+                }
+                .onError {
+                    _state.update {
+                        it.copy(
+                            isModifyingAttendeeTiers = false
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun removeEventTier(eventTier: AttendeeTier){
+        viewModelScope.launch {
+            participantDataSource
+                .removeEventTier(
+                    attendeeTier = eventTier,
+                    eventId = eventId
+                )
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            eventTiers = it.eventTiers - eventTier
+                        )
+                    }
+                }
+                .onError {
+                    _state.update {
+                        it.copy(
+                            isModifyingAttendeeTiers = false
                         )
                     }
                 }

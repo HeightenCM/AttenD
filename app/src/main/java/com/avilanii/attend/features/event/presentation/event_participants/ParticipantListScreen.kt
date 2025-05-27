@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.avilanii.attend.features.event.domain.ParticipantStatus
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListAction
 import com.avilanii.attend.features.event.presentation.event_participants.components.AddParticipantDialog
+import com.avilanii.attend.features.event.presentation.event_participants.components.AttendeeTiersDialog
 import com.avilanii.attend.features.event.presentation.event_participants.components.CheckInReviewDialog
 import com.avilanii.attend.features.event.presentation.event_participants.components.EventInviteQRDialog
 import com.avilanii.attend.features.event.presentation.event_participants.components.ParticipantListItem
@@ -90,8 +91,8 @@ fun ParticipantListScreen(
                             DropdownMenuItem(
                                 text = { Text("Generate invite QR") },
                                 onClick = {
-                                    onAction(ParticipantListAction.OnGenerateInviteQrOpenDialog)
                                     isEventActionMenuOpen = false
+                                    onAction(ParticipantListAction.OnGenerateInviteQrOpenDialog)
                                 }
                             )
                             DropdownMenuItem(
@@ -107,7 +108,10 @@ fun ParticipantListScreen(
                             )
                             DropdownMenuItem(
                                 text = { Text("Modify tiers") },
-                                onClick = { TODO("Add a system for attendees to have tiers.") }
+                                onClick = {
+                                    isEventActionMenuOpen = false
+                                    onAction(ParticipantListAction.OnModifyEventTiersClick)
+                                }
                             )
                         }
                     }
@@ -166,11 +170,24 @@ fun ParticipantListScreen(
                     onAction(ParticipantListAction.OnGenerateInviteQrDismissDialog)
                 }
             }
-            if(state.isReviewingCheckIn == true && state.checkInResponse != null){
+            if(state.isReviewingCheckIn && state.checkInResponse != null){
                 CheckInReviewDialog(
                     checkInResponse = state.checkInResponse
                 ) {
                     onAction(ParticipantListAction.OnDismissReviewCheckIn)
+                }
+            }
+            if(state.isModifyingAttendeeTiers && state.eventTiers.isNotEmpty()){
+                AttendeeTiersDialog(
+                    tiers = state.eventTiers,
+                    onDeleteTierClick = { tier ->
+                        onAction(ParticipantListAction.OnRemoveEventTierClick(tier))
+                    },
+                    onAddTierClick = { tier ->
+                        onAction(ParticipantListAction.OnAddEventTierClick(tier))
+                    }
+                ) {
+                    onAction(ParticipantListAction.OnDismissModifyEventTiersClick)
                 }
             }
         }

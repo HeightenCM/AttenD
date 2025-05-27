@@ -330,6 +330,10 @@ fun ApplicationRootComposable(
                                         is ParticipantListAction.OnGenerateInviteQrOpenDialog -> {}
                                         is ParticipantListAction.OnScanQrClick -> {}
                                         is ParticipantListAction.OnDismissReviewCheckIn -> {}
+                                        is ParticipantListAction.OnDismissModifyEventTiersClick -> {}
+                                        is ParticipantListAction.OnModifyEventTiersClick -> {}
+                                        is ParticipantListAction.OnRemoveEventTierClick -> {}
+                                        is ParticipantListAction.OnAddEventTierClick -> {}
                                     }
                                 }
                             }
