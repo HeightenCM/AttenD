@@ -31,7 +31,7 @@ fun AttendeeTiersDialog(
         onDismissRequest = onDismiss
     ) {
         Card(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxWidth()
                 .height(300.dp)
                 .padding(16.dp),

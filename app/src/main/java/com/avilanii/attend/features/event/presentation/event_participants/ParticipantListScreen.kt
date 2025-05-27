@@ -37,7 +37,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.avilanii.attend.features.event.domain.ParticipantStatus
-import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListAction
 import com.avilanii.attend.features.event.presentation.event_participants.components.AddParticipantDialog
 import com.avilanii.attend.features.event.presentation.event_participants.components.AttendeeTiersDialog
 import com.avilanii.attend.features.event.presentation.event_participants.components.CheckInReviewDialog
