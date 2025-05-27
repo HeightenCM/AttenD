@@ -197,7 +197,11 @@ fun ApplicationRootComposable(
                         is EventListAction.OnNavigateClick -> {
                             when (action.index){
                                 0 -> {}
-                                1 -> navController.navigate(AttendingEventsList)
+                                1 -> navController.navigate(AttendingEventsList){
+                                    popUpTo(Home) {
+                                        inclusive = true
+                                    }
+                                }
                                 2 -> {TODO("Account management")}
                             }
                         }
@@ -234,7 +238,11 @@ fun ApplicationRootComposable(
                         is AttendingEventsListAction.OnEventClick -> {}
                         is AttendingEventsListAction.OnNavigateClick -> {
                             when (action.index){
-                                0 -> navController.navigate(EventList)
+                                0 -> navController.navigate(EventList){
+                                    popUpTo(Home) {
+                                        inclusive = true
+                                    }
+                                }
                                 1 -> {}
                                 2 -> {TODO("Account management")}
                             }
