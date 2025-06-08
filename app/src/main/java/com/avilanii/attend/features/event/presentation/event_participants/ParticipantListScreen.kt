@@ -112,6 +112,18 @@ fun ParticipantListScreen(
                                     onAction(ParticipantListAction.OnModifyEventTiersClick)
                                 }
                             )
+                            DropdownMenuItem(
+                                text = { Text("Import from CSV") },
+                                onClick = {
+                                    isEventActionMenuOpen = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Export to CSV") },
+                                onClick = {
+                                    isEventActionMenuOpen = false
+                                }
+                            )
                         }
                     }
                 }

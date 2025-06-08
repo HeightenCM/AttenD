@@ -24,12 +24,14 @@ fun ParticipantState(
         ParticipantStatus.ACCEPTED -> greenBackground
         ParticipantStatus.REJECTED -> MaterialTheme.colorScheme.onErrorContainer
         ParticipantStatus.CHECKED_IN -> Color.Gray
+        ParticipantStatus.CHECKED_OUT -> Color.Gray
     }
     val textColor = when(participantStatus){
         ParticipantStatus.PENDING -> Color.Yellow
         ParticipantStatus.ACCEPTED -> Color.Green
         ParticipantStatus.REJECTED -> Color.Red
         ParticipantStatus.CHECKED_IN -> Color.Blue
+        ParticipantStatus.CHECKED_OUT -> Color.Cyan
     }
     Box (
         modifier = modifier
@@ -48,7 +50,7 @@ fun ParticipantState(
 private fun PreviewParticipantStatus() {
     AttenDTheme {
         ParticipantState(
-            participantStatus = ParticipantStatus.CHECKED_IN
+            participantStatus = ParticipantStatus.CHECKED_OUT
         )
     }
 }
