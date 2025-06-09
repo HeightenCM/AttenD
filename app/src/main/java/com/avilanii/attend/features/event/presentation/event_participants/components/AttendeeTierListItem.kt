@@ -27,7 +27,8 @@ fun AttendeeTierListItem(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp)
     ) {
-        Text(tierTitle)
+        Text(tierTitle,
+            modifier = Modifier.fillMaxWidth(.75f))
         IconButton(
             onClick = onDeleteClick
         ) {

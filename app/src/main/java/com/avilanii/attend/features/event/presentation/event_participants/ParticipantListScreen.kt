@@ -207,7 +207,7 @@ fun ParticipantListScreen(
                     onAction(ParticipantListAction.OnDismissReviewCheckIn)
                 }
             }
-            if(state.isModifyingAttendeeTiers && state.eventTiers.isNotEmpty()){
+            if(state.isModifyingAttendeeTiers){
                 AttendeeTiersDialog(
                     tiers = state.eventTiers,
                     onDeleteTierClick = { tier ->
