@@ -341,6 +341,8 @@ fun ApplicationRootComposable(
                                         is ParticipantListAction.OnModifyEventTiersClick -> {}
                                         is ParticipantListAction.OnRemoveEventTierClick -> {}
                                         is ParticipantListAction.OnAddEventTierClick -> {}
+                                        is ParticipantListAction.OnExportToCSVClick -> {}
+                                        is ParticipantListAction.OnImportFromCSVClick -> {}
                                     }
                                 }
                             }

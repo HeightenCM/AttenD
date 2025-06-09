@@ -1,6 +1,7 @@
 package com.avilanii.attend.features.event.presentation.event_participants
 
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -63,6 +64,22 @@ fun ParticipantListScreen(
             onAction(ParticipantListAction.OnScanQrClick(result.contents))
     }
 
+    val exportToCsvLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("text/csv")
+    ) { uri ->
+        uri?.let {
+            onAction(ParticipantListAction.OnExportToCSVClick(uri))
+        }
+    }
+
+    val importFromCsvLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        uri?.let {
+            onAction(ParticipantListAction.OnImportFromCSVClick(uri))
+        }
+    }
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -116,12 +133,14 @@ fun ParticipantListScreen(
                                 text = { Text("Import from CSV") },
                                 onClick = {
                                     isEventActionMenuOpen = false
+                                    //importFromCsvLauncher.launch("text/csv")
                                 }
                             )
                             DropdownMenuItem(
                                 text = { Text("Export to CSV") },
                                 onClick = {
                                     isEventActionMenuOpen = false
+                                    exportToCsvLauncher.launch("Participants.csv")
                                 }
                             )
                         }

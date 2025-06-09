@@ -1,7 +1,7 @@
 package com.avilanii.attend.features.event.domain
 
 import com.avilanii.attend.core.domain.models.Email
-import java.time.LocalDateTime
+import kotlinx.serialization.Serializable
 
 data class Participant(
     val name: String,
@@ -9,6 +9,7 @@ data class Participant(
     val status: ParticipantStatus
 )
 
+@Serializable
 enum class ParticipantStatus{
     PENDING, ACCEPTED, REJECTED, CHECKED_IN, CHECKED_OUT
 }

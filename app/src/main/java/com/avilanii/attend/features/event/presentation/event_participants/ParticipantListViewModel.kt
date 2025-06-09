@@ -1,5 +1,7 @@
 package com.avilanii.attend.features.event.presentation.event_participants
 
+import android.content.ContentResolver
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.avilanii.attend.core.domain.onError
@@ -7,7 +9,9 @@ import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
 import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
+import com.avilanii.attend.features.event.presentation.models.toCSV
 import com.avilanii.attend.features.event.presentation.models.toParticipantUi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,7 +23,8 @@ import kotlinx.coroutines.launch
 
 class ParticipantListViewModel(
     private val participantDataSource: ParticipantDataSource,
-    private val eventId: Int
+    private val eventId: Int,
+    private val contentResolver: ContentResolver
 ): ViewModel() {
     private val _state = MutableStateFlow(ParticipantListState())
     val state = _state
@@ -71,6 +76,8 @@ class ParticipantListViewModel(
             is ParticipantListAction.OnModifyEventTiersClick -> loadEventTiers()
             is ParticipantListAction.OnAddEventTierClick -> addEventTier(action.eventTier)
             is ParticipantListAction.OnRemoveEventTierClick -> removeEventTier(action.eventTier)
+            is ParticipantListAction.OnExportToCSVClick -> exportToCSV(action.uri)
+            is ParticipantListAction.OnImportFromCSVClick -> importFromCSV(action.uri)
         }
     }
 
@@ -231,6 +238,22 @@ class ParticipantListViewModel(
                         )
                     }
                 }
+        }
+    }
+
+    private fun exportToCSV(uri: Uri){
+        viewModelScope.launch(Dispatchers.IO) {
+            contentResolver.openOutputStream(uri)?.use {
+                it.bufferedWriter().use {
+                    it.write(_state.value.participants.toCSV())
+                }
+            } ?: throw IllegalStateException("Cannot open output stream for $uri")
+        }
+    }
+
+    private fun importFromCSV(uri: Uri){
+        viewModelScope.launch {
+            TODO(":(")
         }
     }
 }

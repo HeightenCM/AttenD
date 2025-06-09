@@ -13,6 +13,7 @@ import com.avilanii.attend.features.event.presentation.attending_events.Attendin
 import com.avilanii.attend.features.event.presentation.event_list.EventListViewModel
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListViewModel
 import io.ktor.client.engine.cio.CIO
+import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.module.dsl.singleOf
@@ -21,6 +22,8 @@ import org.koin.dsl.module
 
 val appModule = module {
     single { HttpClientFactory.create(CIO.create()) }
+    single<android.content.ContentResolver> { androidContext().contentResolver }
+
     singleOf(::RemoteEventDataSource).bind<EventDataSource>()
     singleOf(::RemoteAttendingEventDataSource).bind<AttendingEventDataSource>()
     singleOf(::RemoteParticipantDataSource).bind<ParticipantDataSource>()
@@ -28,5 +31,8 @@ val appModule = module {
 
     viewModelOf(::EventListViewModel)
     viewModelOf(::AttendingEventsListViewModel)
-    viewModel{ (eventId: Int) -> ParticipantListViewModel(get(), eventId) }
+    viewModel{ (eventId: Int) -> ParticipantListViewModel(
+        get(),
+        eventId,
+        get()) }
 }
