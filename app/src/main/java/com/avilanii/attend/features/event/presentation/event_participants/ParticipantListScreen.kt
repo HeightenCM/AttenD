@@ -210,11 +210,21 @@ fun ParticipantListScreen(
             if(state.isModifyingAttendeeTiers){
                 AttendeeTiersDialog(
                     tiers = state.eventTiers,
+                    isAssigningTier = state.isAssigningTier,
                     onDeleteTierClick = { tier ->
                         onAction(ParticipantListAction.OnRemoveEventTierClick(tier))
                     },
                     onAddTierClick = { tier ->
                         onAction(ParticipantListAction.OnAddEventTierClick(tier))
+                    },
+                    onAssignTierClick = { tier ->
+                        onAction(ParticipantListAction.OnAssignParticipantTierClick(
+                            participant = state.selectedParticipant!!,
+                            attendeeTier = tier
+                        ))
+                    },
+                    onResignTierClick = {
+                        onAction(ParticipantListAction.OnResignParticipantTierClick(state.selectedParticipant!!))
                     }
                 ) {
                     onAction(ParticipantListAction.OnDismissModifyEventTiersClick)

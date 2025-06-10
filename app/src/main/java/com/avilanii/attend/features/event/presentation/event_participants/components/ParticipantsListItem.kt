@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -34,13 +35,21 @@ fun ParticipantListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column (horizontalAlignment = Alignment.Start) {
+        Column (
+            horizontalAlignment = Alignment.Start,
+            modifier = Modifier.fillMaxWidth(.75f)
+        ) {
             Text(participantUi.name, fontSize = 30.sp)
             Text(participantUi.email, fontSize = 15.sp)
         }
-        ParticipantState(
-            participantStatus = participantUi.status
-        )
+        Column(
+            verticalArrangement = Arrangement.Center
+        ) {
+            ParticipantState(
+                participantStatus = participantUi.status
+            )
+            Text(participantUi.tier?.title ?: "No tier")
+        }
     }
 }
 
@@ -57,7 +66,7 @@ private fun PreviewParticipantsListItem() {
 }
 
 internal val previewParticipant = Participant(
-    name = "Joshy",
-    email = Email("mrjosh@gmail.com"),
+    name = "Joshy Al-Kabul Mon Dabugy-dog",
+    email = Email("mrjosh.alkabul.mondabugy.dawg@gmail.com"),
     status = ParticipantStatus.ACCEPTED
 ).toParticipantUi()

@@ -3,6 +3,7 @@ package com.avilanii.attend.features.event.domain
 import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
+import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantDTO
 
 interface ParticipantDataSource {
     suspend fun getParticipants(eventId: Int): Result<List<Participant>, NetworkError>
@@ -12,4 +13,6 @@ interface ParticipantDataSource {
     suspend fun getEventTiers(eventId: Int): Result<List<AttendeeTier>, NetworkError>
     suspend fun addEventTier(attendeeTier: AttendeeTier, eventId: Int): Result<Unit, NetworkError>
     suspend fun removeEventTier(attendeeTier: AttendeeTier, eventId: Int): Result<Unit, NetworkError>
+    suspend fun assignParticipantTier(participant: ParticipantDTO, attendeeTier: AttendeeTier): Result<Unit, NetworkError>
+    suspend fun resignParticipantTier(participant: ParticipantDTO): Result<Unit, NetworkError>
 }

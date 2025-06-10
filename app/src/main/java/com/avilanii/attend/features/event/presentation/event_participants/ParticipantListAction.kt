@@ -21,6 +21,8 @@ sealed interface ParticipantListAction {
     data object OnDismissModifyEventTiersClick: ParticipantListAction
     data class OnRemoveEventTierClick(val eventTier: AttendeeTier): ParticipantListAction
     data class OnAddEventTierClick(val eventTier: AttendeeTier): ParticipantListAction
+    data class OnAssignParticipantTierClick(val participant: ParticipantUi, val attendeeTier: AttendeeTier): ParticipantListAction
+    data class OnResignParticipantTierClick(val participant: ParticipantUi): ParticipantListAction
     data class OnExportToCSVClick(val uri: Uri): ParticipantListAction
     data class OnImportFromCSVClick(val uri: Uri): ParticipantListAction
 }

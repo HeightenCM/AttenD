@@ -1,5 +1,6 @@
 package com.avilanii.attend.features.event.presentation.event_participants.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,12 +21,15 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 fun AttendeeTierListItem(
     modifier: Modifier = Modifier,
     tierTitle: String,
+    onAssignClick: () -> Unit,
     onDeleteClick: ()-> Unit
     ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp)
+        modifier = modifier.fillMaxWidth().padding(10.dp, 0.dp).clickable(
+            onClick = onAssignClick
+        )
     ) {
         Text(tierTitle,
             modifier = Modifier.fillMaxWidth(.75f))
@@ -45,7 +49,8 @@ fun AttendeeTierListItem(
 private fun PreviewAttendeeListTierItem() {
     AttenDTheme {
         AttendeeTierListItem(
-            tierTitle = "Testing"
+            tierTitle = "Testing",
+            onAssignClick = {}
         ){
 
         }

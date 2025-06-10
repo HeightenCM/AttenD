@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class Participant(
     val name: String,
     val email: Email,
-    val status: ParticipantStatus
+    val status: ParticipantStatus,
+    val tier: AttendeeTier? = null
 )
 
 @Serializable

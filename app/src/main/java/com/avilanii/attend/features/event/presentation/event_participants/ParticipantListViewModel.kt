@@ -7,8 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
+import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantDTO
 import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
+import com.avilanii.attend.features.event.presentation.models.ParticipantUi
 import com.avilanii.attend.features.event.presentation.models.toCSV
 import com.avilanii.attend.features.event.presentation.models.toParticipantUi
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +30,10 @@ class ParticipantListViewModel(
 ): ViewModel() {
     private val _state = MutableStateFlow(ParticipantListState())
     val state = _state
-        .onStart { loadParticipants() }
+        .onStart {
+            loadParticipants()
+            loadEventTiers()
+        }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
@@ -50,7 +55,13 @@ class ParticipantListViewModel(
             is ParticipantListAction.OnDismissAddParticipantDialog -> _state.update {
                 it.copy(isAddingParticipant = false)
             }
-            is ParticipantListAction.OnParticipantClick -> {}
+            is ParticipantListAction.OnParticipantClick -> _state.update {
+                it.copy(
+                    isModifyingAttendeeTiers = true,
+                    isAssigningTier = true,
+                    selectedParticipant = action.participantUi
+                )
+            }
             is ParticipantListAction.OnMenuIconClick -> {}
             is ParticipantListAction.OnGenerateInviteQrDismissDialog -> {
                 _state.update {
@@ -70,14 +81,19 @@ class ParticipantListViewModel(
             }
             is ParticipantListAction.OnDismissModifyEventTiersClick -> _state.update {
                 it.copy(
-                    isModifyingAttendeeTiers = false
+                    isModifyingAttendeeTiers = false,
+                    isAssigningTier = false,
+                    selectedParticipant = null
                 )
             }
-            is ParticipantListAction.OnModifyEventTiersClick -> loadEventTiers()
+            is ParticipantListAction.OnModifyEventTiersClick -> displayEventTiers()
             is ParticipantListAction.OnAddEventTierClick -> addEventTier(action.eventTier)
             is ParticipantListAction.OnRemoveEventTierClick -> removeEventTier(action.eventTier)
             is ParticipantListAction.OnExportToCSVClick -> exportToCSV(action.uri)
             is ParticipantListAction.OnImportFromCSVClick -> importFromCSV(action.uri)
+            is ParticipantListAction.OnAssignParticipantTierClick ->
+                assignParticipantTier(action.participant, action.attendeeTier)
+            is ParticipantListAction.OnResignParticipantTierClick -> resignParticipantTier(action.participant)
         }
     }
 
@@ -182,7 +198,6 @@ class ParticipantListViewModel(
                 .onSuccess {  tiers ->
                     _state.update {
                         it.copy(
-                            isModifyingAttendeeTiers = true,
                             eventTiers = tiers
                         )
                     }
@@ -190,6 +205,14 @@ class ParticipantListViewModel(
                 .onError {  error ->
                     _events.send(ParticipantListEvent.Error(error))
                 }
+        }
+    }
+
+    private fun displayEventTiers(){
+        _state.update {
+            it.copy(
+                isModifyingAttendeeTiers = true
+            )
         }
     }
 
@@ -227,7 +250,12 @@ class ParticipantListViewModel(
                 .onSuccess {
                     _state.update {
                         it.copy(
-                            eventTiers = it.eventTiers - eventTier
+                            eventTiers = it.eventTiers - eventTier,
+                            participants = it.participants.map {
+                                if(it.tier == eventTier){
+                                    it.copy(tier = null)
+                                } else it
+                            }
                         )
                     }
                 }
@@ -235,6 +263,82 @@ class ParticipantListViewModel(
                     _state.update {
                         it.copy(
                             isModifyingAttendeeTiers = false
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun assignParticipantTier(participant: ParticipantUi, attendeeTier: AttendeeTier){
+        viewModelScope.launch {
+            participantDataSource
+                .assignParticipantTier(
+                    participant = ParticipantDTO(
+                        eventId = eventId,
+                        name = participant.name,
+                        email = participant.email,
+                        tier = participant.tier
+                    ),
+                    attendeeTier = attendeeTier
+                )
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            participants = it.participants.map {
+                                if (it.email == participant.email)
+                                    it.copy(tier = attendeeTier)
+                                else it
+                            },
+                            isAssigningTier = false,
+                            isModifyingAttendeeTiers = false,
+                            selectedParticipant = null
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(ParticipantListEvent.Error(error))
+                    _state.update {
+                        it.copy(
+                            isAssigningTier = false,
+                            isModifyingAttendeeTiers = false,
+                            selectedParticipant = null
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun resignParticipantTier(participant: ParticipantUi){
+        viewModelScope.launch {
+            participantDataSource
+                .resignParticipantTier(
+                    ParticipantDTO(
+                        eventId = eventId,
+                        name = participant.name,
+                        email = participant.email
+                    )
+                )
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            participants = it.participants.map {
+                                if(it.email == participant.email)
+                                    it.copy(tier = null)
+                                else it
+                            },
+                            isAssigningTier = false,
+                            isModifyingAttendeeTiers = false,
+                            selectedParticipant = null
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(ParticipantListEvent.Error(error))
+                    _state.update {
+                        it.copy(
+                            isAssigningTier = false,
+                            isModifyingAttendeeTiers = false,
+                            selectedParticipant = null
                         )
                     }
                 }

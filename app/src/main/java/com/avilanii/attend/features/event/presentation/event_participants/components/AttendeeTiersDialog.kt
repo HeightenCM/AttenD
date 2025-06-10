@@ -1,5 +1,6 @@
 package com.avilanii.attend.features.event.presentation.event_participants.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,10 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,8 +40,11 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 fun AttendeeTiersDialog(
     modifier: Modifier = Modifier,
     tiers: List<AttendeeTier>,
+    isAssigningTier: Boolean = false,
     onDeleteTierClick: (AttendeeTier) -> Unit,
     onAddTierClick: (AttendeeTier) -> Unit,
+    onAssignTierClick: (AttendeeTier) -> Unit,
+    onResignTierClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
     var isAddingTier by rememberSaveable { mutableStateOf(false) }
@@ -64,7 +70,13 @@ fun AttendeeTiersDialog(
                 ) {
                     items(tiers) { tier ->
                         AttendeeTierListItem(
-                            tierTitle = tier.title
+                            tierTitle = tier.title,
+                            onAssignClick = {
+                                if (isAssigningTier){
+                                    onAssignTierClick(tier)
+                                    onDismiss()
+                                }
+                            }
                         ) {
                             onDeleteTierClick(tier)
                         }
@@ -86,7 +98,7 @@ fun AttendeeTiersDialog(
                     )
                 }
                 Row(
-                    horizontalArrangement = if (isAddingTier)
+                    horizontalArrangement = if (isAddingTier || isAssigningTier)
                         Arrangement.SpaceBetween
                     else Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
@@ -97,11 +109,27 @@ fun AttendeeTiersDialog(
                         }
                     ) {
                         Icon(
-                            imageVector = if (isAddingTier) {
+                            imageVector = if (isAddingTier)
                                 Icons.Filled.Clear
-                            } else Icons.Filled.AddCircle,
-                            contentDescription = "Add event tier"
+                            else Icons.Filled.AddCircle,
+                            contentDescription = if(isAddingTier)
+                                "Cancel"
+                            else "Add event tier"
                         )
+                    }
+                    if (isAssigningTier){
+                        IconButton(
+                            onClick = {
+                                onResignTierClick()
+                                onDismiss()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Delete,
+                                contentDescription = "Resign tier",
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
                     }
                     if (isAddingTier) {
                         IconButton(
@@ -112,7 +140,7 @@ fun AttendeeTiersDialog(
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Check,
-                                contentDescription = "Add event tier"
+                                contentDescription = "Confirm"
                             )
                         }
                     }
@@ -128,8 +156,11 @@ private fun PreviewAttendeeTiersDialog() {
     AttenDTheme {
         AttendeeTiersDialog(
             tiers = listOf(AttendeeTier("Gold"), AttendeeTier("Silver")),
+            isAssigningTier = true,
             onDeleteTierClick = {},
-            onAddTierClick = {}
+            onAddTierClick = {},
+            onAssignTierClick = {},
+            onResignTierClick = {}
         ) {
 
         }

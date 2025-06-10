@@ -8,6 +8,7 @@ fun ParticipantDTO.toParticipant(): Participant{
     return Participant(
         name = name,
         email = email.toEmail(),
-        status = status
+        status = status,
+        tier = tier
     )
 }

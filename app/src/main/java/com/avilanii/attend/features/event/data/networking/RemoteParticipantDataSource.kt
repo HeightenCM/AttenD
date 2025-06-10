@@ -112,4 +112,29 @@ class RemoteParticipantDataSource(
             }
         }
     }
+
+    override suspend fun assignParticipantTier(
+        participant: ParticipantDTO,
+        attendeeTier: AttendeeTier
+    ): Result<Unit, NetworkError> {
+        return safeCall {
+            httpClient.post(
+                urlString = constructUrl("events/${participant.eventId}/participants/tiers")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(Pair(participant, attendeeTier))
+            }
+        }
+    }
+
+    override suspend fun resignParticipantTier(participant: ParticipantDTO): Result<Unit, NetworkError> {
+        return safeCall {
+            httpClient.delete(
+                urlString = constructUrl("events/${participant.eventId}/participants/tiers")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                setBody(participant)
+            }
+        }
+    }
 }
