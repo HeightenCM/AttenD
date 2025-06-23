@@ -1,11 +1,11 @@
 package com.avilanii.attend.features.event.data.networking
 
+import com.avilanii.attend.SessionManager
 import com.avilanii.attend.core.data.constructUrl
 import com.avilanii.attend.core.data.safeCall
 import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
-import com.avilanii.attend.core.navigation.SessionManager
 import com.avilanii.attend.features.event.data.mappers.toEvent
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventsResponseDTO
@@ -27,7 +27,7 @@ class RemoteAttendingEventDataSource(
             httpClient.get(
                 urlString = constructUrl("/events/attending")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
             }
         }.map { response ->
             response.data.map{ it.toEvent() }
@@ -39,7 +39,7 @@ class RemoteAttendingEventDataSource(
             httpClient.post(
                 urlString = constructUrl("/events/attending")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(qrValue)
             }
         }.map { response ->
@@ -55,7 +55,7 @@ class RemoteAttendingEventDataSource(
             httpClient.post(
                 urlString = constructUrl("events/attending/${eventId}")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(isAccepted)
             }
         }
@@ -66,7 +66,7 @@ class RemoteAttendingEventDataSource(
             httpClient.get(
                 urlString = constructUrl("qr/${eventId}")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
             }
         }
     }
@@ -76,7 +76,7 @@ class RemoteAttendingEventDataSource(
             httpClient.post(
                 urlString = constructUrl("qr")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(externalQR)
             }
         }
@@ -87,7 +87,7 @@ class RemoteAttendingEventDataSource(
             httpClient.get(
                 urlString = constructUrl("qr")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
             }
         }
     }

@@ -1,11 +1,11 @@
 package com.avilanii.attend.features.event.data.networking
 
+import com.avilanii.attend.SessionManager
 import com.avilanii.attend.core.data.constructUrl
 import com.avilanii.attend.core.data.safeCall
 import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
-import com.avilanii.attend.core.navigation.SessionManager
 import com.avilanii.attend.features.event.data.mappers.toParticipant
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantDTO
@@ -29,7 +29,7 @@ class RemoteParticipantDataSource(
             httpClient.get(
                 urlString = constructUrl("events/$eventId/participants")
             ){
-                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
             }
         }.map { response ->
             response.data.map { it.toParticipant() }
@@ -50,7 +50,7 @@ class RemoteParticipantDataSource(
                     email = email,
                     eventId = eventId
                 ))
-                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
             }
         }.map { response ->
             response.toParticipant()
@@ -62,7 +62,7 @@ class RemoteParticipantDataSource(
             httpClient.get(
                 urlString = constructUrl("qr/invite/${eventId}")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
             }
         }
     }
@@ -72,7 +72,7 @@ class RemoteParticipantDataSource(
             httpClient.get(
                 urlString = constructUrl("events/$eventId/participants/checkin")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(eventQr)
             }
         }
@@ -83,7 +83,7 @@ class RemoteParticipantDataSource(
             httpClient.get(
                 urlString = constructUrl("/events/$eventId/tiers")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
             }
         }
     }
@@ -93,7 +93,7 @@ class RemoteParticipantDataSource(
             httpClient.post(
                 urlString = constructUrl("events/$eventId/tiers")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(attendeeTier)
             }
         }
@@ -107,7 +107,7 @@ class RemoteParticipantDataSource(
             httpClient.delete(
                 urlString = constructUrl("events/$eventId/tiers")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(attendeeTier)
             }
         }
@@ -121,7 +121,7 @@ class RemoteParticipantDataSource(
             httpClient.post(
                 urlString = constructUrl("events/${participant.eventId}/participants/tiers")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(Pair(participant, attendeeTier))
             }
         }
@@ -132,7 +132,7 @@ class RemoteParticipantDataSource(
             httpClient.delete(
                 urlString = constructUrl("events/${participant.eventId}/participants/tiers")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(participant)
             }
         }

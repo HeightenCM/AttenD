@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -28,12 +27,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.MultiProcessDataStoreFactory
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.avilanii.attend.SessionManager
+import com.avilanii.attend.core.data.UserPreferences
+import com.avilanii.attend.core.data.UserPreferencesSerializer
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.core.presentation.ObserveAsEvents
@@ -55,32 +58,40 @@ import com.avilanii.attend.features.event.presentation.event_participants.Partic
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListEvent
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListScreen
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
+import java.io.File
 
 @Composable
 fun ApplicationRootComposable(
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+    val dataStore = MultiProcessDataStoreFactory.create(
+        serializer = UserPreferencesSerializer,
+        produceFile = {
+            File("${context.cacheDir.path}/myapp.preferences_pb")
+        }
+    )
 
-    LaunchedEffect(SessionManager.jwtToken.collectAsState().value) {
-        if (SessionManager.jwtToken.value == null) {
-            navController.navigate(Auth) {
-                popUpTo(Home) { inclusive = true }
+    LaunchedEffect(SessionManager.jwtToken) {
+        SessionManager.setToken(dataStore.data.first().jwt)
+        if (SessionManager.jwtToken != null) {
+            navController.navigate(Home) {
+                popUpTo(Auth) { inclusive = true }
             }
         }
     }
 
     NavHost(
         navController = navController,
-        startDestination = Home
+        startDestination = Auth
     ) {
         navigation<Auth>(
             startDestination = Login("", "")
@@ -95,6 +106,13 @@ fun ApplicationRootComposable(
                             coroutineScope.launch {
                                 authDataSource.login(action.userLoginRequestUi.email, action.userLoginRequestUi.password)
                                     .onSuccess { jwtReceived ->
+                                        scope.launch {
+                                            dataStore.updateData {
+                                                UserPreferences(
+                                                    jwt = jwtReceived
+                                                )
+                                            }
+                                        }
                                         SessionManager.setToken(jwtReceived)
                                         navController.navigate(Home){
                                             popUpTo(Auth) {
@@ -103,7 +121,7 @@ fun ApplicationRootComposable(
                                         }
                                     }
                                     .onError {
-
+                                        TODO("Invalid credentials!")
                                     }
                             }
                         }
@@ -372,16 +390,3 @@ data object Auth
 data class EventManagement(val eventId: Int)
 @Serializable
 data object EventManagementSubgraph
-
-object SessionManager {
-    private val _jwtToken = MutableStateFlow<String?>(null)
-    val jwtToken: StateFlow<String?> = _jwtToken.asStateFlow()
-
-    fun setToken(token: String) {
-        _jwtToken.value = token
-    }
-
-    fun clearToken() {
-        _jwtToken.value = null
-    }
-}

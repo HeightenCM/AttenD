@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<host-apdu-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:description="@string/app_name"
+    android:requireDeviceUnlock="true">
+    <service>
+        <aid-group android:category="other" android:description="@string/app_name">
+            <aid-filter android:name="F222222221" /> <!-- Config mode -->
+            <aid-filter android:name="F222222222" /> <!-- JWT mode -->
+        </aid-group>
+    </service>
+</host-apdu-service>

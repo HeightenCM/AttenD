@@ -1,11 +1,11 @@
 package com.avilanii.attend.features.event.data.networking
 
+import com.avilanii.attend.SessionManager
 import com.avilanii.attend.core.data.constructUrl
 import com.avilanii.attend.core.data.safeCall
 import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
-import com.avilanii.attend.core.navigation.SessionManager
 import com.avilanii.attend.features.event.data.mappers.toEvent
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventsResponseDTO
@@ -26,7 +26,7 @@ class RemoteEventDataSource(
             httpClient.get(
                 urlString = constructUrl("/events")
             ) {
-                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken)
             }
         }.map { response ->
             response.data.map { it.toEvent() }
@@ -38,7 +38,7 @@ class RemoteEventDataSource(
             httpClient.get(
                 urlString = constructUrl("/events/$eventId")
             ) {
-                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken)
             }
         }.map { response ->
             response.toEvent()
@@ -59,7 +59,7 @@ class RemoteEventDataSource(
                     budget = eventBudget,
                     dateTime = eventDateTime
                 ))
-                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken.value)
+                header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken)
             }
         }.map { response ->
             response.toEvent()
