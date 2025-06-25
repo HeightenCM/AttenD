@@ -53,7 +53,8 @@ import com.journeyapps.barcodescanner.ScanOptions
 fun ParticipantListScreen(
     state: ParticipantListState,
     modifier: Modifier = Modifier,
-    onAction: (ParticipantListAction)->Unit) {
+    onAction: (ParticipantListAction)->Unit
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     var isEventActionMenuOpen by remember { mutableStateOf(false) }
 
@@ -87,7 +88,7 @@ fun ParticipantListScreen(
                 scrollBehavior = scrollBehavior,
                 navigationIcon = {
                     IconButton(onClick = {onAction(ParticipantListAction.OnMenuIconClick)}) {
-                        Icon(Icons.Filled.Menu, contentDescription = "Open event menu icon")
+                        Icon(Icons.Filled.Menu, contentDescription = "Open event menu")
                     }
                 },
                 actions = {
@@ -151,7 +152,7 @@ fun ParticipantListScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {onAction(ParticipantListAction.OnAddParticipantClick)},
-                icon = { Icon(Icons.Filled.Add, "Add participant icon") },
+                icon = { Icon(Icons.Filled.Add, "Add participant") },
                 text = { Text("Add participant") },
                 containerColor = MaterialTheme.colorScheme.primary,
                 modifier = modifier

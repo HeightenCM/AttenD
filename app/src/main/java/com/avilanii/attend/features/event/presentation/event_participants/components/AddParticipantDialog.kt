@@ -54,7 +54,7 @@ fun AddParticipantDialog(
             ) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
-                    contentDescription = "Add participant icon",
+                    contentDescription = "Add participant",
                     modifier = modifier.padding(8.dp)
                 )
                 Text(

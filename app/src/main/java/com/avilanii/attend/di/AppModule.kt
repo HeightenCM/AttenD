@@ -8,11 +8,14 @@ import com.avilanii.attend.features.auth.data.networking.RemoteAuthDataSource
 import com.avilanii.attend.features.auth.domain.AuthDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteAttendingEventDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteEventDataSource
+import com.avilanii.attend.features.event.data.networking.RemoteEventIotDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteParticipantDataSource
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
 import com.avilanii.attend.features.event.domain.EventDataSource
+import com.avilanii.attend.features.event.domain.EventIotDataSource
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListViewModel
+import com.avilanii.attend.features.event.presentation.event_iot.EventIotScreenViewModel
 import com.avilanii.attend.features.event.presentation.event_list.EventListViewModel
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListViewModel
 import io.ktor.client.engine.cio.CIO
@@ -32,11 +35,13 @@ val appModule = module {
     singleOf(::RemoteParticipantDataSource).bind<ParticipantDataSource>()
     singleOf(::RemoteAuthDataSource).bind<AuthDataSource>()
     singleOf(::RemoteAccountMenuDataSource).bind<AccountMenuDataSource>()
+    singleOf(::RemoteEventIotDataSource).bind<EventIotDataSource>()
 
 
     viewModelOf(::EventListViewModel)
     viewModelOf(::AttendingEventsListViewModel)
     viewModelOf(::AccountMenuViewModel)
+    viewModelOf(::EventIotScreenViewModel)
     viewModel{ (eventId: Int) -> ParticipantListViewModel(
         get(),
         eventId,
