@@ -36,7 +36,11 @@ class EventIotScreenViewModel(
 
     fun onAction(action: EventIotScreenAction){
         when(action){
-            is EventIotScreenAction.OnAddGateTierClick -> TODO()
+            is EventIotScreenAction.OnAddGateTierClick -> _state.update {
+                it.copy(
+                    isAddingGateTier = true
+                )
+            }
             is EventIotScreenAction.OnAddIotClick -> _state.update {
                 it.copy(
                     isAddingSmartGate = true

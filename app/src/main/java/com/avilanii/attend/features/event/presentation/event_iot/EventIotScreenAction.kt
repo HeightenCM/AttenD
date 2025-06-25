@@ -10,4 +10,6 @@ sealed interface EventIotScreenAction {
     data class OnAddingGateClick(val name: String): EventIotScreenAction
     data class OnRemoveGateTierClick(val smartGate: SmartGate, val tier: Pair<AttendeeTier, Int>): EventIotScreenAction
     data object OnAddGateTierClick: EventIotScreenAction
+    data class OnChoseToAddGateTier(val tier: AttendeeTier): EventIotScreenAction
+    data object OnDismissAddGateTierClick: EventIotScreenAction
 }

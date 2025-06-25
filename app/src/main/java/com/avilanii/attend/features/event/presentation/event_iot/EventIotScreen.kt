@@ -27,7 +27,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.avilanii.attend.features.event.domain.AttendeeTier
+import com.avilanii.attend.features.event.domain.SmartGate
 import com.avilanii.attend.features.event.presentation.event_iot.components.AddSmartGateDialog
+import com.avilanii.attend.features.event.presentation.event_iot.components.GateTierListDialog
 import com.avilanii.attend.features.event.presentation.event_iot.components.SmartGateListItem
 import com.avilanii.attend.ui.theme.AttenDTheme
 
@@ -97,8 +100,18 @@ fun EventIotScreen(
                     onSubmit = { name ->
                         onAction(EventIotScreenAction.OnAddingGateClick(name))
                     }
+                ) { isAdding ->
+                    onAction(EventIotScreenAction.OnDismissAddIotClick(isAdding))
+                }
+            }
+            if(state.isAddingGateTier){
+                GateTierListDialog(
+                    tiers = state.tiers,
+                    onSelectTierClick = { selectedTier ->
+                        onAction(EventIotScreenAction.OnChoseToAddGateTier(selectedTier))
+                    }
                 ) {
-                    onAction(EventIotScreenAction.OnDismissAddIotClick(it))
+                    onAction(EventIotScreenAction.OnDismissAddGateTierClick)
                 }
             }
         }
@@ -110,7 +123,24 @@ fun EventIotScreen(
 private fun PreviewEventIotScreen() {
     AttenDTheme {
         EventIotScreen(
-            state = EventIotScreenState()
+            state = EventIotScreenState(
+                smartGates = listOf(
+                    SmartGate(
+                        name = "Hello boss Gate",
+                        allowedTiers = listOf(
+                            Pair(AttendeeTier("Premium"), 50),
+                            Pair(AttendeeTier("Gold"), 540)
+                        )
+                    ),
+                    SmartGate(
+                        name = "Testing Gate",
+                        allowedTiers = listOf(
+                            Pair(AttendeeTier("Premium"), 10),
+                            Pair(AttendeeTier("Gold"), 540)
+                        )
+                    )
+                )
+            )
         ) { }
     }
 }
