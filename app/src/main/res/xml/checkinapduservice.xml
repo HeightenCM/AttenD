@@ -4,7 +4,7 @@
     android:requireDeviceUnlock="true">
     <service>
         <aid-group android:category="other" android:description="@string/app_name">
-            <aid-filter android:name="F222222221" /> <!-- Config mode -->
+            <aid-filter android:name="F222222223" /> <!-- Config mode -->
             <aid-filter android:name="F222222222" /> <!-- JWT mode -->
         </aid-group>
     </service>

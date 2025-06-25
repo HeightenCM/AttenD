@@ -1,10 +1,12 @@
 package com.avilanii.attend.core.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.DeviceHub
+import androidx.compose.material.icons.filled.PersonAdd
+import androidx.compose.material.icons.outlined.Analytics
+import androidx.compose.material.icons.outlined.DeviceHub
+import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.serialization.Serializable
 
@@ -14,18 +16,26 @@ enum class EventMenuItems(
     val title: String,
     val route: EventMenuRoutes
 ) {
-    Participants(Icons.Filled.Person,
-        Icons.Outlined.Person,
+    Participants(Icons.Filled.PersonAdd,
+        Icons.Outlined.PersonAdd,
         "Participants",
         EventMenuRoutes.Participants),
-    Statistics(Icons.Filled.Info,
-        Icons.Outlined.Info,
-        "Statistics",
+    Statistics(Icons.Filled.Analytics,
+        Icons.Outlined.Analytics,
+        "Analytics",
         EventMenuRoutes.Participants),
-
+    Analytics(Icons.Filled.DeviceHub,
+        Icons.Outlined.DeviceHub,
+        "IoT",
+        EventMenuRoutes.Participants
+    )
 }
 
 sealed interface EventMenuRoutes{
     @Serializable
     data object Participants: EventMenuRoutes
+    @Serializable
+    data object Analytics: EventMenuRoutes
+    @Serializable
+    data object IoT: EventMenuRoutes
 }

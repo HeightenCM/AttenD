@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.EventAvailable
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
@@ -27,20 +27,23 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.datastore.core.MultiProcessDataStoreFactory
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.avilanii.attend.AttenDApp
 import com.avilanii.attend.SessionManager
 import com.avilanii.attend.core.data.UserPreferences
-import com.avilanii.attend.core.data.UserPreferencesSerializer
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.core.presentation.ObserveAsEvents
 import com.avilanii.attend.core.presentation.toString
+import com.avilanii.attend.features.account.presentation.accountmenu.AccountMenuAction
+import com.avilanii.attend.features.account.presentation.accountmenu.AccountMenuEvent
+import com.avilanii.attend.features.account.presentation.accountmenu.AccountMenuScreen
+import com.avilanii.attend.features.account.presentation.accountmenu.AccountMenuViewModel
 import com.avilanii.attend.features.auth.domain.AuthDataSource
 import com.avilanii.attend.features.auth.presentation.login.LoginScreen
 import com.avilanii.attend.features.auth.presentation.login.LoginScreenAction
@@ -64,7 +67,6 @@ import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
-import java.io.File
 
 @Composable
 fun ApplicationRootComposable(
@@ -72,13 +74,7 @@ fun ApplicationRootComposable(
 ) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
-    val dataStore = MultiProcessDataStoreFactory.create(
-        serializer = UserPreferencesSerializer,
-        produceFile = {
-            File("${context.cacheDir.path}/myapp.preferences_pb")
-        }
-    )
+    val dataStore = AttenDApp.instance.userPrefsStore
 
     LaunchedEffect(SessionManager.jwtToken) {
         SessionManager.setToken(dataStore.data.first().jwt)
@@ -134,7 +130,7 @@ fun ApplicationRootComposable(
             composable<Register> {
                 val authDataSource = koinInject<AuthDataSource>()
                 val coroutineScope = rememberCoroutineScope()
-                RegisterScreen(){ action ->
+                RegisterScreen{ action ->
                     when (action){
                         is RegisterScreenAction.OnSubmitForm -> {
                             val name = action.userRegisterRequestUi.name
@@ -144,7 +140,9 @@ fun ApplicationRootComposable(
                                 authDataSource.register(name, email, password)
                                     .onSuccess {
                                         navController.navigate(Login(email, password)){
-                                            popUpTo(Auth)
+                                            popUpTo(Auth){
+                                                inclusive = true
+                                            }
                                         }
                                     }
                                     .onError {
@@ -154,7 +152,9 @@ fun ApplicationRootComposable(
                         }
                         is RegisterScreenAction.OnLoginClick -> {
                             navController.navigate(Login("", "")){
-                                popUpTo(Auth)
+                                popUpTo(Auth){
+                                    inclusive = true
+                                }
                             }
                         }
                     }
@@ -167,13 +167,13 @@ fun ApplicationRootComposable(
             val bottomNavBarItems = listOf(
                 BottomNavigationItem(
                     title = "Organizing",
-                    selectedIcon = Icons.Filled.Home,
-                    unselectedIcon = Icons.Outlined.Home
+                    selectedIcon = Icons.Filled.Event,
+                    unselectedIcon = Icons.Outlined.Event
                 ),
                 BottomNavigationItem(
                     title = "Attending",
-                    selectedIcon = Icons.Filled.Email,
-                    unselectedIcon = Icons.Outlined.Email
+                    selectedIcon = Icons.Filled.EventAvailable,
+                    unselectedIcon = Icons.Outlined.EventAvailable
                 ),
                 BottomNavigationItem(
                     title = "Account",
@@ -213,13 +213,16 @@ fun ApplicationRootComposable(
                         is EventListAction.OnDismissCreateEventDialog -> {}
                         is EventListAction.OnNavigateClick -> {
                             when (action.index){
-                                0 -> {}
                                 1 -> navController.navigate(AttendingEventsList){
                                     popUpTo(Home) {
                                         inclusive = true
                                     }
                                 }
-                                2 -> {TODO("Account management")}
+                                2 -> navController.navigate(AccountMenu) {
+                                    popUpTo(Home) {
+                                        inclusive = true
+                                    }
+                                }
                             }
                         }
                     }
@@ -260,14 +263,74 @@ fun ApplicationRootComposable(
                                         inclusive = true
                                     }
                                 }
-                                1 -> {}
-                                2 -> {TODO("Account management")}
+                                2 -> navController.navigate(AccountMenu){
+                                    popUpTo(Home){
+                                        inclusive = true
+                                    }
+                                }
                             }
                         }
                         is AttendingEventsListAction.OnRejectEventInvitationClick -> {}
                         is AttendingEventsListAction.OnSaveExternalQrClick -> {}
                         is AttendingEventsListAction.OnDismissSaveExternalQrClick -> {}
                         is AttendingEventsListAction.OnExternalEventClick -> {}
+                    }
+                }
+            }
+            composable<AccountMenu>{
+                val viewModel: AccountMenuViewModel = koinViewModel<AccountMenuViewModel>()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                val context = LocalContext.current
+                val coroutineScope = rememberCoroutineScope()
+
+                ObserveAsEvents(events = viewModel.events) { event ->
+                    when (event) {
+                        is AccountMenuEvent.Error -> {
+                            Toast.makeText(
+                                context,
+                                event.error.toString(context),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+
+                AccountMenuScreen(
+                    modifier = modifier,
+                    state = state,
+                    bottomNavBarItems = bottomNavBarItems
+                ) { action ->
+                    viewModel.onAction(action)
+                    when(action){
+                        is AccountMenuAction.OnLogOutClick -> {
+                            coroutineScope.launch {
+                                dataStore.updateData {
+                                    UserPreferences(
+                                        jwt = null
+                                    )
+                                }
+                            }
+                            SessionManager.clearToken()
+                            navController.navigate(Login("", "")){
+                                popUpTo(Auth) {
+                                    inclusive = true
+                                }
+                            }
+                        }
+                        is AccountMenuAction.OnNavigateClick -> {
+                            when(action.index){
+                                0 -> navController.navigate(EventList) {
+                                    popUpTo(Home) {
+                                        inclusive = true
+                                    }
+                                }
+                                1 -> navController.navigate(AttendingEventsList) {
+                                    popUpTo(Home) {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -378,6 +441,8 @@ fun ApplicationRootComposable(
 data object EventList
 @Serializable
 data object AttendingEventsList
+@Serializable
+data object AccountMenu
 @Serializable
 data object Home
 @Serializable

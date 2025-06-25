@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
-import com.avilanii.attend.features.event.presentation.models.EventUi
 import com.avilanii.attend.ui.theme.AttenDTheme
 
 @Composable
@@ -48,7 +47,13 @@ fun EventQrDialog(
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = modifier.fillMaxWidth()
                 )
+                Text(
+                    text = "You may scan the following qr:"
+                )
                 QrCodeDisplay(qrCode, modifier = modifier.fillMaxWidth().padding(10.dp))
+                Text(
+                    text = "Alternatively, you may tap your phone on the smart gate when NFC is on."
+                )
             }
 
         }

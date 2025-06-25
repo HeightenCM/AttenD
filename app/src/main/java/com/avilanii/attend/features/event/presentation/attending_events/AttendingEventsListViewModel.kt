@@ -2,6 +2,8 @@ package com.avilanii.attend.features.event.presentation.attending_events
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.avilanii.attend.AttenDApp
+import com.avilanii.attend.core.data.UserPreferences
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
@@ -42,6 +44,13 @@ class AttendingEventsListViewModel(
                 addEvent(action.scannedQr)
             }
             is AttendingEventsListAction.OnDismissEventInspectDialog -> _state.update {
+                viewModelScope.launch {
+                    AttenDApp.instance.userPrefsStore.updateData {
+                        UserPreferences(
+                            participantIdentifier = null
+                        )
+                    }
+                }
                 it.copy(
                     isInspectingEvent = false,
                     selectedEventTitle = null,
@@ -167,6 +176,11 @@ class AttendingEventsListViewModel(
                 .getQr(eventId)
                 .onSuccess { receivedQr ->
                     _state.update { it.copy(selectedQr = receivedQr) }
+                    AttenDApp.instance.userPrefsStore.updateData {
+                        UserPreferences(
+                            participantIdentifier = receivedQr
+                        )
+                    }
                 }
                 .onError { error ->
                     _events.send(AttendingEventListEvent.Error(error))

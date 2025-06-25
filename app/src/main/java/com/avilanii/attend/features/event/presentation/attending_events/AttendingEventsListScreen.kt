@@ -12,11 +12,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.EventAvailable
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -186,13 +186,13 @@ private fun PreviewAttendingEventsListScreen() {
             bottomNavBarItems = listOf(
                 BottomNavigationItem(
                     title = "Organizing",
-                    selectedIcon = Icons.Filled.Home,
-                    unselectedIcon = Icons.Outlined.Home
+                    selectedIcon = Icons.Filled.Event,
+                    unselectedIcon = Icons.Outlined.Event
                 ),
                 BottomNavigationItem(
                     title = "Attending",
-                    selectedIcon = Icons.Filled.Email,
-                    unselectedIcon = Icons.Outlined.Email
+                    selectedIcon = Icons.Filled.EventAvailable,
+                    unselectedIcon = Icons.Outlined.EventAvailable
                 ),
                 BottomNavigationItem(
                     title = "Account",

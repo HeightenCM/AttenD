@@ -14,6 +14,7 @@ composeNavigation = "2.8.9"
 zxing = "3.5.3"
 zxingEmbedded = "4.3.0"
 dataStore = "1.1.7"
+extendedIcons = "1.7.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,7 @@ zxing = {module = "com.google.zxing:core", version.ref = "zxing"}
 zxingEmbedded = {module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingEmbedded"}
 dataStore = {module = "androidx.datastore:datastore-preferences", version.ref = "dataStore"}
 dataStoreCore = {module = "androidx.datastore:datastore-core", version.ref = "dataStore"}
+extendedIcons = {module = "androidx.compose.material:material-icons-extended", version.ref = "extendedIcons"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -61,7 +63,8 @@ compose = [
     "androidx-ui",
     "androidx-ui-graphics",
     "androidx-ui-tooling-preview",
-    "androidx-compose-navigation"
+    "androidx-compose-navigation",
+    "extendedIcons"
 ]
 compose-debug = [
     "androidx-ui-tooling",

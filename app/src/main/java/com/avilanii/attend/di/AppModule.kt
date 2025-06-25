@@ -1,6 +1,9 @@
 package com.avilanii.attend.di
 
 import com.avilanii.attend.core.data.HttpClientFactory
+import com.avilanii.attend.features.account.data.RemoteAccountMenuDataSource
+import com.avilanii.attend.features.account.domain.AccountMenuDataSource
+import com.avilanii.attend.features.account.presentation.accountmenu.AccountMenuViewModel
 import com.avilanii.attend.features.auth.data.networking.RemoteAuthDataSource
 import com.avilanii.attend.features.auth.domain.AuthDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteAttendingEventDataSource
@@ -28,9 +31,12 @@ val appModule = module {
     singleOf(::RemoteAttendingEventDataSource).bind<AttendingEventDataSource>()
     singleOf(::RemoteParticipantDataSource).bind<ParticipantDataSource>()
     singleOf(::RemoteAuthDataSource).bind<AuthDataSource>()
+    singleOf(::RemoteAccountMenuDataSource).bind<AccountMenuDataSource>()
+
 
     viewModelOf(::EventListViewModel)
     viewModelOf(::AttendingEventsListViewModel)
+    viewModelOf(::AccountMenuViewModel)
     viewModel{ (eventId: Int) -> ParticipantListViewModel(
         get(),
         eventId,

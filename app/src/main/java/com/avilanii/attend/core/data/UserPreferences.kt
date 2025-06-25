@@ -13,6 +13,7 @@ import java.util.Base64
 @Serializable
 data class UserPreferences(
     val jwt: String? = null,
+    val participantIdentifier: String? = null,
     val eventId: Int? = null
 )
 
