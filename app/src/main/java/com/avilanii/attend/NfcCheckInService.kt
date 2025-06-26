@@ -28,13 +28,13 @@ class NfcCheckInService : HostApduService() {
     ): ByteArray? {
         val apduHex = commandApdu?.joinToString("") { "%02X".format(it) } ?: ""
         val pair = runBlocking {
-            Pair(datastore.data.first().participantIdentifier, datastore.data.first().eventId)
+            Pair(datastore.data.first().participantIdentifier, datastore.data.first().gateIdentifier)
         }
         Log.wtf("JWT", pair.first)
         Log.wtf("eventID", pair.second.toString())
         return when {
             apduHex.contains(CONFIG_AID) ->
-                pair.second?.toString()?.toByteArray(Charsets.UTF_8) ?: ERROR_MARKER.toByteArray(Charsets.UTF_8)
+                pair.second?.toByteArray(Charsets.UTF_8) ?: ERROR_MARKER.toByteArray(Charsets.UTF_8)
 
             apduHex.contains(NORMAL_AID) ->
                 pair.first?.toByteArray(Charsets.UTF_8) ?: ERROR_MARKER.toByteArray(Charsets.UTF_8)

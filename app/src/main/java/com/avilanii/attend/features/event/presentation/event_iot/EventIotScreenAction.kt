@@ -5,11 +5,11 @@ import com.avilanii.attend.features.event.domain.SmartGate
 
 sealed interface EventIotScreenAction {
     data object OnAddIotClick: EventIotScreenAction
-    data class OnDismissAddIotClick(val isAdding: Boolean): EventIotScreenAction
+    data object OnDismissAddIotClick: EventIotScreenAction
     data object OnMenuIconClick: EventIotScreenAction
     data class OnAddingGateClick(val name: String): EventIotScreenAction
     data class OnRemoveGateTierClick(val smartGate: SmartGate, val tier: Pair<AttendeeTier, Int>): EventIotScreenAction
-    data object OnAddGateTierClick: EventIotScreenAction
-    data class OnChoseToAddGateTier(val tier: AttendeeTier): EventIotScreenAction
+    data class OnAddGateTierClick(val smartGate: SmartGate): EventIotScreenAction
+    data class OnChoseToAddGateTier(val tier: AttendeeTier, val gate: SmartGate): EventIotScreenAction
     data object OnDismissAddGateTierClick: EventIotScreenAction
 }

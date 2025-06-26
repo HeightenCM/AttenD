@@ -24,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.avilanii.attend.features.event.domain.AttendeeTier
@@ -90,25 +89,27 @@ fun EventIotScreen(
                             ))
                         }
                     ) {
-                        onAction(EventIotScreenAction.OnAddGateTierClick)
+                        onAction(EventIotScreenAction.OnAddGateTierClick(smartGate))
                     }
                     HorizontalDivider()
                 }
             }
             if (state.isAddingSmartGate){
                 AddSmartGateDialog(
+                    isGateAdded = state.isSmartGateAdded,
                     onSubmit = { name ->
                         onAction(EventIotScreenAction.OnAddingGateClick(name))
                     }
-                ) { isAdding ->
-                    onAction(EventIotScreenAction.OnDismissAddIotClick(isAdding))
+                ) {
+                    if(state.isSmartGateAdded)
+                        onAction(EventIotScreenAction.OnDismissAddIotClick)
                 }
             }
-            if(state.isAddingGateTier){
+            if(state.isAddingGateTier && state.selectedGate != null){
                 GateTierListDialog(
                     tiers = state.tiers,
                     onSelectTierClick = { selectedTier ->
-                        onAction(EventIotScreenAction.OnChoseToAddGateTier(selectedTier))
+                        onAction(EventIotScreenAction.OnChoseToAddGateTier(selectedTier, state.selectedGate))
                     }
                 ) {
                     onAction(EventIotScreenAction.OnDismissAddGateTierClick)

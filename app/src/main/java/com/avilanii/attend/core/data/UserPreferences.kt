@@ -14,7 +14,7 @@ import java.util.Base64
 data class UserPreferences(
     val jwt: String? = null,
     val participantIdentifier: String? = null,
-    val eventId: Int? = null
+    val gateIdentifier: String? = null
 )
 
 object UserPreferencesSerializer: Serializer<UserPreferences> {

@@ -20,14 +20,14 @@ enum class EventMenuItems(
         Icons.Outlined.PersonAdd,
         "Participants",
         EventMenuRoutes.Participants),
-    Statistics(Icons.Filled.Analytics,
+    Analytics(Icons.Filled.Analytics,
         Icons.Outlined.Analytics,
         "Analytics",
         EventMenuRoutes.Participants),
-    Analytics(Icons.Filled.DeviceHub,
+    Iot(Icons.Filled.DeviceHub,
         Icons.Outlined.DeviceHub,
         "IoT",
-        EventMenuRoutes.Participants
+        EventMenuRoutes.IoT
     )
 }
 

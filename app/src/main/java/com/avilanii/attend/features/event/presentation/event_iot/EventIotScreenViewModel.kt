@@ -2,6 +2,8 @@ package com.avilanii.attend.features.event.presentation.event_iot
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.avilanii.attend.AttenDApp
+import com.avilanii.attend.core.data.UserPreferences
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.domain.AttendeeTier
@@ -36,23 +38,42 @@ class EventIotScreenViewModel(
 
     fun onAction(action: EventIotScreenAction){
         when(action){
-            is EventIotScreenAction.OnAddGateTierClick -> _state.update {
-                it.copy(
-                    isAddingGateTier = true
-                )
-            }
+            is EventIotScreenAction.OnAddGateTierClick -> loadTiers(action.smartGate)
             is EventIotScreenAction.OnAddIotClick -> _state.update {
                 it.copy(
                     isAddingSmartGate = true
                 )
             }
             is EventIotScreenAction.OnAddingGateClick -> addSmartGate(action.name)
-            is EventIotScreenAction.OnDismissAddIotClick -> TODO()
+            is EventIotScreenAction.OnDismissAddIotClick -> _state.update {
+                it.copy(
+                    isSmartGateAdded = false,
+                    isAddingSmartGate = false
+                )
+            }
             is EventIotScreenAction.OnMenuIconClick -> {}
             is EventIotScreenAction.OnRemoveGateTierClick -> removeGateTier(
                 smartGate = action.smartGate,
                 attendeeTier = action.tier.first
             )
+            is EventIotScreenAction.OnChoseToAddGateTier -> addGateTier(action.gate, action.tier)
+            is EventIotScreenAction.OnDismissAddGateTierClick ->{
+                _state.update {
+                    it.copy(
+                        isAddingGateTier = false,
+                        selectedGate = null,
+                        tiers = emptyList()
+                    )
+                }
+                viewModelScope.launch {
+                    AttenDApp.instance.userPrefsStore.updateData {
+                        UserPreferences(
+                            jwt = it.jwt,
+                            gateIdentifier = null
+                        )
+                    }
+                }
+            }
         }
     }
 
@@ -84,15 +105,47 @@ class EventIotScreenViewModel(
         viewModelScope.launch {
             eventIotDataSource
                 .addSmartGate(eventId, name)
-                .onSuccess {
+                .onSuccess { receivedUniqueRandID ->
                     _state.update {
                         it.copy(
-                            smartGates = it.smartGates + SmartGate(name)
+                            smartGates = it.smartGates + SmartGate(name),
+                            isSmartGateAdded = true
+                        )
+                    }
+                    AttenDApp.instance.userPrefsStore.updateData {
+                        UserPreferences(
+                            jwt = it.jwt,
+                            gateIdentifier = receivedUniqueRandID
                         )
                     }
                 }
                 .onError { error ->
                     _events.send(EventIotEvent.Error(error))
+                }
+        }
+    }
+
+    private fun loadTiers(smartGate: SmartGate){
+        viewModelScope.launch {
+            eventIotDataSource
+                .loadEventTiers(eventId)
+                .onSuccess { tiers ->
+                    _state.update {
+                        it.copy(
+                            isAddingGateTier = true,
+                            selectedGate = smartGate,
+                            tiers = tiers
+                        )
+                    }
+                }
+                .onError { error ->
+                    _state.update {
+                        it.copy(
+                            isAddingGateTier = false
+                        )
+                    }
+                    _events.send(EventIotEvent.Error(error))
+
                 }
         }
     }
@@ -112,11 +165,17 @@ class EventIotScreenViewModel(
                                 } else {
                                     gate
                                 }
-                            }
+                            },
+                            isAddingGateTier = false
                         )
                     }
                 }
                 .onError { error ->
+                    _state.update {
+                        it.copy(
+                            isAddingGateTier = false
+                        )
+                    }
                     _events.send(EventIotEvent.Error(error))
                 }
         }

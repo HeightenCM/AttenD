@@ -34,15 +34,15 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 @Composable
 fun AddSmartGateDialog(
     modifier: Modifier = Modifier,
+    isGateAdded: Boolean,
     onSubmit: (String) -> Unit,
-    onDismiss: (Boolean) -> Unit
+    onDismiss: () -> Unit
 ) {
     var name by rememberSaveable { mutableStateOf("") }
     var isAddingGate by rememberSaveable { mutableStateOf(false) }
-    var isGateAdded by rememberSaveable { mutableStateOf(false) }
     
     Dialog(
-        onDismissRequest = {onDismiss(isGateAdded)}
+        onDismissRequest = {onDismiss()}
     ) {
         Card (
             shape = RoundedCornerShape(12.dp),
@@ -78,7 +78,7 @@ fun AddSmartGateDialog(
                         modifier = Modifier.fillMaxWidth().padding(10.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        TextButton(onClick = {onDismiss(isGateAdded)}) { Text("Cancel") }
+                        TextButton(onClick = {onDismiss()}) { Text("Cancel") }
                         Button(onClick = {
                             isAddingGate
                             onSubmit(name)
@@ -118,7 +118,8 @@ fun AddSmartGateDialog(
 private fun PreviewAddSmartGateDialog() {
     AttenDTheme {
         AddSmartGateDialog(
-            onSubmit = {}
+            onSubmit = {},
+            isGateAdded = false
         ){
 
         }

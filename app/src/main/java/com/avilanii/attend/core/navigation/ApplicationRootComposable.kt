@@ -53,6 +53,10 @@ import com.avilanii.attend.features.event.presentation.attending_events.Attendin
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListAction
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListScreen
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListViewModel
+import com.avilanii.attend.features.event.presentation.event_iot.EventIotEvent
+import com.avilanii.attend.features.event.presentation.event_iot.EventIotScreen
+import com.avilanii.attend.features.event.presentation.event_iot.EventIotScreenAction
+import com.avilanii.attend.features.event.presentation.event_iot.EventIotScreenViewModel
 import com.avilanii.attend.features.event.presentation.event_list.EventListAction
 import com.avilanii.attend.features.event.presentation.event_list.EventListEvent
 import com.avilanii.attend.features.event.presentation.event_list.EventListScreen
@@ -382,7 +386,7 @@ fun ApplicationRootComposable(
                         navigation<EventManagementSubgraph>(
                             startDestination = EventMenuRoutes.Participants
                         ){
-                            composable< EventMenuRoutes.Participants>{
+                            composable<EventMenuRoutes.Participants>{
                                 val viewModel: ParticipantListViewModel = koinViewModel<ParticipantListViewModel>(parameters = {parametersOf(eventId)})
                                 val state by viewModel.state.collectAsStateWithLifecycle()
                                 val context = LocalContext.current
@@ -426,6 +430,46 @@ fun ApplicationRootComposable(
                                         is ParticipantListAction.OnImportFromCSVClick -> {}
                                         is ParticipantListAction.OnAssignParticipantTierClick -> {}
                                         is ParticipantListAction.OnResignParticipantTierClick -> {}
+                                    }
+                                }
+                            }
+                            composable<EventMenuRoutes.IoT> {
+                                val viewModel: EventIotScreenViewModel =
+                                    koinViewModel<EventIotScreenViewModel>(parameters = {
+                                        parametersOf(eventId)
+                                    })
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                val context = LocalContext.current
+
+                                ObserveAsEvents(events = viewModel.events) { event ->
+                                    when (event) {
+                                        is EventIotEvent.Error -> {
+                                            Toast.makeText(
+                                                context,
+                                                event.error.toString(context),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                }
+                                EventIotScreen(
+                                    state = state,
+                                    modifier = modifier
+                                ) { action ->
+                                    viewModel.onAction(action)
+                                    when (action) {
+                                        is EventIotScreenAction.OnAddGateTierClick -> {}
+                                        is EventIotScreenAction.OnAddIotClick -> {}
+                                        is EventIotScreenAction.OnAddingGateClick -> {}
+                                        is EventIotScreenAction.OnChoseToAddGateTier -> {}
+                                        is EventIotScreenAction.OnDismissAddGateTierClick -> {}
+                                        is EventIotScreenAction.OnDismissAddIotClick -> {}
+                                        is EventIotScreenAction.OnMenuIconClick -> {
+                                            scope.launch {
+                                                drawerState.apply { if (isClosed) open() else close() }
+                                            }
+                                        }
+                                        is EventIotScreenAction.OnRemoveGateTierClick -> {}
                                     }
                                 }
                             }
