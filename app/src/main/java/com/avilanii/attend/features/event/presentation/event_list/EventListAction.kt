@@ -10,7 +10,7 @@ sealed interface EventListAction {
     data object OnDismissCreateEventDialog: EventListAction
     data class OnCreatedEvent(
         val eventName: String,
-        val eventBudget: Int,
+        val eventVenue: String,
         val eventDate: LocalDate,
         val eventTime: LocalTime
         ): EventListAction

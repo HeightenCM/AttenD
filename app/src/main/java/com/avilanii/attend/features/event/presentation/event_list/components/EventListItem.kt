@@ -59,5 +59,5 @@ internal val previewEvent = Event(
     id = 5,
     name = "That damn exam",
     dateTime = LocalDateTime.now().minusDays(1),
-    budget = 500
+    venue = "Timisoara"
 ).toEventUi()

@@ -8,9 +8,8 @@ data class EventUi(
     val id: Int = 0,
     val name: String = "",
     val dateTime: DisplayableDateTime = LocalDateTime.now().toDisplayableDateTime(),
-    val budget: Int? = null,
+    val venue: String = "",
     val organizer: String? = null,
-    val venue: String? = null,
     val isPending: Boolean? = null
 )
 
@@ -24,7 +23,6 @@ fun Event.toEventUi():EventUi{
         id = this.id,
         name = this.name,
         dateTime = this.dateTime.toDisplayableDateTime(),
-        budget = this.budget,
         organizer = this.organizerName,
         venue = this.venue,
         isPending = this.isPending

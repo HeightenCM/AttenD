@@ -113,8 +113,8 @@ fun EventListScreen(
                     onDismiss = {
                         onAction(EventListAction.OnDismissCreateEventDialog)
                     },
-                    onSubmit = { eventName, eventBudget, eventDate, eventTime ->
-                        onAction(EventListAction.OnCreatedEvent(eventName, eventBudget, eventDate, eventTime))
+                    onSubmit = { eventName, eventVenue, eventDate, eventTime ->
+                        onAction(EventListAction.OnCreatedEvent(eventName, eventVenue, eventDate, eventTime))
                     },
                     eventData = EventUi(),
                     modifier = modifier

@@ -41,7 +41,7 @@ class EventListViewModel(
             is EventListAction.OnCreatedEvent -> {
                 createEvent(
                 action.eventName,
-                action.eventBudget,
+                action.eventVenue,
                 LocalDateTime.of(action.eventDate, action.eventTime))
                 _state.update {
                     it.copy(
@@ -84,12 +84,12 @@ class EventListViewModel(
         }
     }
 
-    private fun createEvent(eventName: String, eventBudget: Int, eventDateTime: LocalDateTime){
+    private fun createEvent(eventName: String, eventVenue: String, eventDateTime: LocalDateTime){
         viewModelScope.launch {
             eventDataSource
                 .createEvent(
                     eventName = eventName,
-                    eventBudget = eventBudget,
+                    eventVenue = eventVenue,
                     eventDateTime = eventDateTime.toString()
                 )
                 .onSuccess { eventReceived ->
