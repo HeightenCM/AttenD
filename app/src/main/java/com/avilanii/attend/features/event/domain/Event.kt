@@ -5,7 +5,8 @@ import java.time.LocalDateTime
 data class Event(
     val id: Int,
     val name: String,
-    val dateTime: LocalDateTime,
+    val startDateTime: LocalDateTime,
+    val endDateTime: LocalDateTime,
     val venue: String,
     val organizerName: String? = null,
     val isPending: Boolean? = null

@@ -14,23 +14,27 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.avilanii.attend.ui.theme.AttenDTheme
 import com.avilanii.attend.ui.theme.greenBackground
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 @Composable
 fun EventState(
     modifier: Modifier = Modifier,
-    date: LocalDateTime) {
-    val textValue = if(date> LocalDateTime.now()){
+    startDate: LocalDateTime,
+    endDate: LocalDateTime) {
+    val textValue = if(startDate > LocalDateTime.now()){
         " COMING "
-    } else {
+    } else if(endDate < LocalDateTime.now()){
         " ENDED "
-    }
-    val boxColor = if(date>LocalDateTime.now()){
-        greenBackground
     } else {
-        MaterialTheme.colorScheme.errorContainer
+        " ONGOING "
     }
-    val textColor = if(date>LocalDateTime.now()){
+    val boxColor = if(startDate>LocalDateTime.now()){
+        greenBackground
+    } else if(endDate < LocalDateTime.now()){
+        MaterialTheme.colorScheme.errorContainer
+    } else {
+        Color.Blue
+    }
+    val textColor = if(startDate>LocalDateTime.now()){
         Color.Green
     } else {
         MaterialTheme.colorScheme.onErrorContainer
@@ -51,6 +55,7 @@ fun EventState(
 @Composable
 private fun EventStatePreview() {
     AttenDTheme {
-        EventState(date = LocalDateTime.parse("2026-03-13T03:00:25.952929"))
+        EventState(startDate = LocalDateTime.parse("2025-07-09T03:00:25.952929"),
+            endDate = LocalDateTime.parse("2026-03-13T03:00:25.952929"))
     }
 }

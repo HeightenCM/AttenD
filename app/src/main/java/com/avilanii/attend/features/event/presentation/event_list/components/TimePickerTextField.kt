@@ -24,6 +24,7 @@ import java.time.temporal.ChronoUnit
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerTextField(
+    label: String,
     eventTime: LocalTime,
     onChoseValue: (LocalTime) -> Unit,
     modifier: Modifier = Modifier) {
@@ -56,7 +57,7 @@ fun TimePickerTextField(
     OutlinedTextField(
         value = selectedTime.truncatedTo(ChronoUnit.MINUTES).toString(),
         onValueChange = {},
-        label = { Text("Event time") },
+        label = { Text(label) },
         readOnly = true,
         enabled = false,
         colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -74,6 +75,7 @@ fun TimePickerTextField(
 private fun PreviewTimePickerTextField() {
     AttenDTheme {
         TimePickerTextField(
+            label = "Time",
             eventTime = LocalTime.now(),
             onChoseValue = {},
         )

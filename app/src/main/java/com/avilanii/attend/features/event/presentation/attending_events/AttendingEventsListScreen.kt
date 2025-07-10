@@ -179,7 +179,8 @@ private fun PreviewAttendingEventsListScreen() {
             state = AttendingEventsListState(
                 events = (1..50).map {
                     previewEvent.copy(id = it,
-                        dateTime = LocalDateTime.now().plusMinutes(1).toDisplayableDateTime(),
+                        startDateTime = LocalDateTime.now().plusMinutes(1).toDisplayableDateTime(),
+                        endDateTime = LocalDateTime.now().plusMinutes(2).toDisplayableDateTime(),
                         isPending = it%2==0)
                 }
             ),

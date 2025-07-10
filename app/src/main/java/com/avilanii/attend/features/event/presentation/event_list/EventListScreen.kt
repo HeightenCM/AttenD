@@ -37,7 +37,6 @@ import com.avilanii.attend.features.event.presentation.event_list.components.Cre
 import com.avilanii.attend.features.event.presentation.event_list.components.CreateEventFAB
 import com.avilanii.attend.features.event.presentation.event_list.components.EventListItem
 import com.avilanii.attend.features.event.presentation.event_list.components.previewEvent
-import com.avilanii.attend.features.event.presentation.models.EventUi
 import com.avilanii.attend.features.event.presentation.models.toDisplayableDateTime
 import com.avilanii.attend.ui.theme.AttenDTheme
 import java.time.LocalDateTime
@@ -113,10 +112,9 @@ fun EventListScreen(
                     onDismiss = {
                         onAction(EventListAction.OnDismissCreateEventDialog)
                     },
-                    onSubmit = { eventName, eventVenue, eventDate, eventTime ->
-                        onAction(EventListAction.OnCreatedEvent(eventName, eventVenue, eventDate, eventTime))
+                    onSubmit = { eventName, eventVenue, eventStartDate, eventEndDate ->
+                        onAction(EventListAction.OnCreatedEvent(eventName, eventVenue, eventStartDate, eventEndDate))
                     },
-                    eventData = EventUi(),
                     modifier = modifier
                 )
             }
@@ -133,7 +131,9 @@ private fun EventListScreenPreview() {
         EventListScreen(
             state = EventListState(
                 events = (1..50).map {
-                    previewEvent.copy(id = it, dateTime = LocalDateTime.now().plusMinutes(1).toDisplayableDateTime())
+                    previewEvent.copy(id = it,
+                        startDateTime = LocalDateTime.now().plusMinutes(1).toDisplayableDateTime(),
+                        endDateTime = LocalDateTime.now().plusMinutes(1).toDisplayableDateTime())
                 }
             ),
             modifier = Modifier.background(MaterialTheme.colorScheme.background),

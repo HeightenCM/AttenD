@@ -40,7 +40,8 @@ fun EventListItem(eventUi: EventUi,
             text = eventUi.name,
             color = contentColor)
         EventState(
-            date = eventUi.dateTime.value
+            startDate = eventUi.startDateTime.value,
+            endDate = eventUi.endDateTime.value
         )
     }
 }
@@ -58,6 +59,7 @@ private fun EventListItemPreview() {
 internal val previewEvent = Event(
     id = 5,
     name = "That damn exam",
-    dateTime = LocalDateTime.now().minusDays(1),
+    startDateTime = LocalDateTime.now().minusDays(1),
+    endDateTime = LocalDateTime.now(),
     venue = "Timisoara"
 ).toEventUi()

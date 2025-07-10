@@ -9,7 +9,8 @@ fun EventDTO.toEvent(): Event{
         id = id!!,
         name = name,
         venue = venue,
-        dateTime = LocalDateTime.parse(dateTime),
+        startDateTime = LocalDateTime.parse(startDateTime),
+        endDateTime = LocalDateTime.parse(endDateTime),
         isPending = isPending,
         organizerName = organizer
     )

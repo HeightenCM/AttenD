@@ -48,7 +48,8 @@ class RemoteEventDataSource(
     override suspend fun createEvent(
         eventName: String,
         eventVenue: String,
-        eventDateTime: String
+        startDateTime: String,
+        endDateTime: String
     ): Result<Event, NetworkError> {
         return safeCall<EventDTO> {
             httpClient.post(
@@ -57,7 +58,8 @@ class RemoteEventDataSource(
                 setBody(EventDTO(
                     name = eventName,
                     venue = eventVenue,
-                    dateTime = eventDateTime
+                    startDateTime = startDateTime,
+                    endDateTime = endDateTime,
                 ))
                 header(HttpHeaders.Authorization, "Bearer "+SessionManager.jwtToken)
             }

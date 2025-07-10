@@ -62,7 +62,7 @@ fun AttendingEventsListItem(
                         contentDescription = "Event venue icon"
                     )
                     Text(
-                        text = eventUi.venue?: "Unspecified"
+                        text = eventUi.venue
                     )
                 }
             }
@@ -81,7 +81,7 @@ fun AttendingEventsListItem(
                         contentDescription = "Event date icon"
                     )
                     Text(
-                        text = eventUi.dateTime.formatted
+                        text = "From ${eventUi.startDateTime} to ${eventUi.endDateTime}"
                     )
                 }
                 Row(

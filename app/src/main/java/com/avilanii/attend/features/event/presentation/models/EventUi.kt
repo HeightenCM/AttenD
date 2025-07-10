@@ -7,7 +7,8 @@ import java.time.format.DateTimeFormatter
 data class EventUi(
     val id: Int = 0,
     val name: String = "",
-    val dateTime: DisplayableDateTime = LocalDateTime.now().toDisplayableDateTime(),
+    val startDateTime: DisplayableDateTime = LocalDateTime.now().toDisplayableDateTime(),
+    val endDateTime: DisplayableDateTime = LocalDateTime.now().toDisplayableDateTime(),
     val venue: String = "",
     val organizer: String? = null,
     val isPending: Boolean? = null
@@ -22,7 +23,8 @@ fun Event.toEventUi():EventUi{
     return EventUi(
         id = this.id,
         name = this.name,
-        dateTime = this.dateTime.toDisplayableDateTime(),
+        startDateTime = this.startDateTime.toDisplayableDateTime(),
+        endDateTime = this.endDateTime.toDisplayableDateTime(),
         organizer = this.organizerName,
         venue = this.venue,
         isPending = this.isPending

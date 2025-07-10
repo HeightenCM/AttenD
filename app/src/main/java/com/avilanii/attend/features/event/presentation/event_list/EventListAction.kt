@@ -1,8 +1,7 @@
 package com.avilanii.attend.features.event.presentation.event_list
 
 import com.avilanii.attend.features.event.presentation.models.EventUi
-import java.time.LocalDate
-import java.time.LocalTime
+import java.time.LocalDateTime
 
 sealed interface EventListAction {
     data class OnEventClick(val eventUi: EventUi): EventListAction
@@ -11,8 +10,8 @@ sealed interface EventListAction {
     data class OnCreatedEvent(
         val eventName: String,
         val eventVenue: String,
-        val eventDate: LocalDate,
-        val eventTime: LocalTime
+        val eventStartDate: LocalDateTime,
+        val eventEndDate: LocalDateTime
         ): EventListAction
     data class OnNavigateClick(val index: Int): EventListAction
 }
