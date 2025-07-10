@@ -3,14 +3,13 @@ package com.avilanii.attend.features.event.presentation.event_list.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -35,40 +34,36 @@ fun DatePickerTextField(
         Color.Black
     }
     var isDialogOpen by rememberSaveable { mutableStateOf(false) }
-    val dateRangePickerState = rememberDateRangePickerState(
-        initialSelectedStartDateMillis = Instant.now().toEpochMilli(),
-        initialSelectedEndDateMillis = Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli(),
-    )
+    var startDate by rememberSaveable { mutableLongStateOf(Instant.now().toEpochMilli()) }
+    var endDate by rememberSaveable { mutableLongStateOf(Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()) }
 
     if(isDialogOpen) {
-        DatePickerModal(
-            onConfirm = {
+        DateRangePickerModal(
+            startDate = startDate,
+            endDate = endDate,
+            onDateRangeSelected = {
+                startDate = it.first ?: startDate
+                endDate = it.second ?: endDate
+                onChoseValue(it.first, it.second)
                 isDialogOpen = false
-                onChoseValue(dateRangePickerState.selectedStartDateMillis, dateRangePickerState.selectedEndDateMillis)
-            },
-            onDismiss = { isDialogOpen = false }
+            }
         ) {
-            DateRangePicker(
-                state = dateRangePickerState,
-                title = {
-                    Text(
-                        text = "Select date range"
-                    )
-                }
-            )
+            isDialogOpen = false
         }
     }
     OutlinedTextField(
-        value = "From ${dateRangePickerState.selectedStartDateMillis?.let { millis ->
-            Instant.ofEpochMilli(millis)
-                .atZone(ZoneId.systemDefault())
-                .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
-        } ?: "ERROR"}" +
-                " to ${dateRangePickerState.selectedEndDateMillis?.let { millis ->
-                    Instant.ofEpochMilli(millis)
-                        .atZone(ZoneId.systemDefault())
-                        .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
-                } ?: "ERROR"}",
+        value = "From ${
+            startDate.let { millis ->
+                Instant.ofEpochMilli(millis)
+                    .atZone(ZoneId.systemDefault())
+                    .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+            } ?: "ERROR"}" +
+                " to ${
+                    endDate.let { millis ->
+                        Instant.ofEpochMilli(millis)
+                            .atZone(ZoneId.systemDefault())
+                            .format(DateTimeFormatter.ofPattern("d MMMM yyyy"))
+                    } ?: "ERROR"}",
         onValueChange = {},
         label = { Text("Date interval") },
         readOnly = true,
