@@ -39,8 +39,12 @@ fun CreateEventDialog(
     modifier: Modifier = Modifier) {
     var eventName by rememberSaveable { mutableStateOf("") }
     var eventVenue by rememberSaveable { mutableStateOf("") }
-    var startDate by rememberSaveable { mutableStateOf(LocalDateTime.now()) }
-    var endDate by rememberSaveable { mutableStateOf(LocalDateTime.now().plusHours(1)) }
+    var startDate by rememberSaveable {
+        mutableStateOf(LocalDateTime.now())
+    }
+    var endDate by rememberSaveable {
+        mutableStateOf(LocalDateTime.now().plusDays(1).plusHours(1))
+    }
 
     Dialog(
         onDismissRequest = onDismiss
@@ -124,7 +128,9 @@ fun CreateEventDialog(
                                     .withMonth(newDate.monthValue)
                                     .withDayOfMonth(newDate.dayOfMonth)
                             }
-                        }
+                        },
+                        givenStartDate = startDate.toLocalDate(),
+                        givenEndDate = endDate.toLocalDate()
                     )
                 }
 

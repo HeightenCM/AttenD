@@ -19,13 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import com.avilanii.attend.ui.theme.AttenDTheme
 import java.time.Instant
+import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerTextField(
+    givenStartDate: LocalDate,
+    givenEndDate: LocalDate,
     onChoseValue: (Long?, Long?) -> Unit,
     modifier: Modifier = Modifier) {
     val fieldColor = if(isSystemInDarkTheme()) {
@@ -34,8 +37,12 @@ fun DatePickerTextField(
         Color.Black
     }
     var isDialogOpen by rememberSaveable { mutableStateOf(false) }
-    var startDate by rememberSaveable { mutableLongStateOf(Instant.now().toEpochMilli()) }
-    var endDate by rememberSaveable { mutableLongStateOf(Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()) }
+    var startDate by rememberSaveable {
+        mutableLongStateOf(givenStartDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
+    }
+    var endDate by rememberSaveable {
+        mutableLongStateOf(givenEndDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli())
+    }
 
     if(isDialogOpen) {
         DateRangePickerModal(
@@ -85,7 +92,9 @@ private fun PreviewDatePickerTextField() {
     AttenDTheme {
         DatePickerTextField(
             onChoseValue = { start, end ->
-            }
+            },
+            givenStartDate = LocalDate.now(),
+            givenEndDate = LocalDate.now().plusDays(1),
         )
     }
 }
