@@ -458,18 +458,18 @@ fun ApplicationRootComposable(
                                 ) { action ->
                                     viewModel.onAction(action)
                                     when (action) {
-                                        is EventIotScreenAction.OnAddGateTierClick -> {}
-                                        is EventIotScreenAction.OnAddIotClick -> {}
-                                        is EventIotScreenAction.OnAddingGateClick -> {}
-                                        is EventIotScreenAction.OnChoseToAddGateTier -> {}
-                                        is EventIotScreenAction.OnDismissAddGateTierClick -> {}
-                                        is EventIotScreenAction.OnDismissAddIotClick -> {}
                                         is EventIotScreenAction.OnMenuIconClick -> {
                                             scope.launch {
                                                 drawerState.apply { if (isClosed) open() else close() }
                                             }
                                         }
-                                        is EventIotScreenAction.OnRemoveGateTierClick -> {}
+                                        is EventIotScreenAction.OnAddGateClick -> {}
+                                        is EventIotScreenAction.OnChangeTierStateClick -> {}
+                                        is EventIotScreenAction.OnCreateGateClick -> {}
+                                        is EventIotScreenAction.OnDismissActivateGateClick -> {}
+                                        is EventIotScreenAction.OnDismissAddGateClick -> {}
+                                        is EventIotScreenAction.OnDismissGateTierDialog -> {}
+                                        is EventIotScreenAction.OnGateClick -> {}
                                     }
                                 }
                             }
