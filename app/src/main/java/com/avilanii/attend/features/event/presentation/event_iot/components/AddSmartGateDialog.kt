@@ -78,7 +78,8 @@ fun AddSmartGateDialog(
                     ) {
                         Text("Cancel")
                     }
-                    Button(onClick = {
+                    Button(
+                        onClick = {
                         onSubmit(name)
                     }) {
                         Text("Add")

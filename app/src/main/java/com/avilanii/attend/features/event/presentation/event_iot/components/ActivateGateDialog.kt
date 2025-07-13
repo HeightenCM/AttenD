@@ -1,11 +1,13 @@
 package com.avilanii.attend.features.event.presentation.event_iot.components
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Nfc
+import androidx.compose.material.icons.filled.Contactless
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -36,14 +38,16 @@ fun ActivateGateDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = modifier
                     .fillMaxWidth()
+                    .padding(8.dp)
             ) {
                 Text(
                     text = "You may now approach your device to the smart gate in order to activate it.\n" +
                             "Make sure NFC is turned on.",
                     textAlign = TextAlign.Center
                 )
+                Spacer(modifier = modifier.height(12.dp))
                 Icon(
-                    imageVector = Icons.Filled.Nfc,
+                    imageVector = Icons.Filled.Contactless,
                     contentDescription = "Activate smart gate via NFC"
                 )
             }

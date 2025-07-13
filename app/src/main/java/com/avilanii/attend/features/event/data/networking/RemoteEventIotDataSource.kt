@@ -9,10 +9,10 @@ import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.EventIotDataSource
 import com.avilanii.attend.features.event.domain.SmartGate
 import io.ktor.client.HttpClient
-import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
 
@@ -22,17 +22,17 @@ class RemoteEventIotDataSource(
     override suspend fun getIotDevices(eventId: Int): Result<List<SmartGate>, NetworkError> {
         return safeCall<List<SmartGate>> {
             httpClient.get(
-                urlString = constructUrl("smartGate/${eventId}")
+                urlString = constructUrl("events/${eventId}/smartGates")
             ) {
                 header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
             }
         }
     }
 
-    override suspend fun addSmartGate(eventId: Int, name: String): Result<String, NetworkError> {
+    override suspend fun addSmartGate(eventId: Int, name: String): Result<SmartGate, NetworkError> {
         return safeCall {
             httpClient.post(
-                urlString = constructUrl("smartGate/${eventId}")
+                urlString = constructUrl("events/${eventId}/smartGates")
             ) {
                 header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
                 setBody(name)
@@ -40,45 +40,43 @@ class RemoteEventIotDataSource(
         }
     }
 
-    override suspend fun removeGateTier(
+    override suspend fun activateSmartGate(
         eventId: Int,
-        name: String,
-        attendeeTier: AttendeeTier
-    ): Result<Unit, NetworkError> {
-        return safeCall {
-            httpClient.delete(
-                urlString = constructUrl("smartGate/${eventId}/tier")
-            ) {
-                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
-                setBody(Pair(name, attendeeTier))
-            }
-        }
-    }
-
-    override suspend fun addGateTier(
-        eventId: Int,
-        name: String,
-        attendeeTier: AttendeeTier
-    ): Result<Unit, NetworkError> {
-        return safeCall {
-            httpClient.post(
-                urlString = constructUrl("smartGate/${eventId}/tier")
-            ) {
-                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
-                setBody(Pair(name, attendeeTier))
-            }
-        }
-    }
-
-    override suspend fun loadEventTiers(eventId: Int): Result<List<AttendeeTier>, NetworkError> {
+        gateId: Int
+    ): Result<String, NetworkError> {
         return safeCall {
             httpClient.get(
-                urlString = constructUrl("/events/$eventId/tiers")
+                urlString = constructUrl("events/${eventId}/smartGates/${gateId}/activate")
             ) {
-                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
+                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
             }
         }
     }
 
+    override suspend fun changeGateTierState(
+        eventId: Int,
+        gateId: Int,
+        tierId: Int
+    ): Result<Unit, NetworkError> {
+        return safeCall {
+            httpClient.put(
+                urlString = constructUrl("events/${eventId}/smartGates/${gateId}/tiers/${tierId}")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
+            }
+        }
+    }
 
+    override suspend fun loadEventTiers(
+        eventId: Int,
+        gateId: Int
+    ): Result<List<AttendeeTier>, NetworkError> {
+        return safeCall {
+            httpClient.get(
+                urlString = constructUrl("events/${eventId}/smartGates/${gateId}/tiers")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
+            }
+        }
+    }
 }

@@ -70,7 +70,7 @@ fun SmartGateListItem(
 private fun PreviewSmartGateListItem() {
     AttenDTheme {
         SmartGateListItem(
-            smartGate = SmartGate("Aha", false)
+            smartGate = SmartGate(15, "Aha", false)
         ) {
 
         }

@@ -134,7 +134,7 @@ fun AttendeeTiersDialog(
                         IconButton(
                             onClick = {
                                 isAddingTier = false
-                                onAddTierClick(AttendeeTier(newTier))
+                                onAddTierClick(AttendeeTier(title = newTier))
                             }
                         ) {
                             Icon(
@@ -154,7 +154,7 @@ fun AttendeeTiersDialog(
 private fun PreviewAttendeeTiersDialog() {
     AttenDTheme {
         AttendeeTiersDialog(
-            tiers = listOf(AttendeeTier("Gold"), AttendeeTier("Silver")),
+            tiers = listOf(AttendeeTier(1, "Gold"), AttendeeTier(2, "Silver")),
             isAssigningTier = true,
             onDeleteTierClick = {},
             onAddTierClick = {},

@@ -32,7 +32,7 @@ import com.avilanii.attend.ui.theme.AttenDTheme
 fun GateTierListDialog(
     modifier: Modifier = Modifier,
     tiers: List<AttendeeTier>,
-    onChangeTierStateClick: (AttendeeTier) -> Unit,
+    onChangeTierStateClick: (Int) -> Unit,
     onDismiss: () -> Unit
 ) {
     Dialog(
@@ -66,7 +66,7 @@ fun GateTierListDialog(
                             )
                             IconButton(
                                 onClick = {
-                                    onChangeTierStateClick(tier)
+                                    onChangeTierStateClick(tier.id!!)
                                 }
                             ) {
                                 Icon(
@@ -101,8 +101,8 @@ private fun PreviewGateTierListDialog() {
     AttenDTheme {
         GateTierListDialog(
             tiers = listOf(
-                AttendeeTier("Gold", 1, true),
-                AttendeeTier("Silver", 5, false)
+                AttendeeTier(1,"Gold", 1, true),
+                AttendeeTier(2, "Silver", 5, false)
             ),
             onChangeTierStateClick = {}
         ){

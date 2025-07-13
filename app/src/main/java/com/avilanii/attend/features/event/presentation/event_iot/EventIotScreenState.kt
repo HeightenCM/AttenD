@@ -10,4 +10,5 @@ data class EventIotScreenState(
     val isActivatingGate: Boolean = false,
     val isManagingGateTiers: Boolean = false,
     val isLoading: Boolean = false,
+    val selectedGateId: Int? = null
 )

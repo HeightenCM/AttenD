@@ -6,9 +6,7 @@ import com.avilanii.attend.AttenDApp
 import com.avilanii.attend.core.data.UserPreferences
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
-import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.EventIotDataSource
-import com.avilanii.attend.features.event.domain.SmartGate
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,42 +36,39 @@ class EventIotScreenViewModel(
 
     fun onAction(action: EventIotScreenAction){
         when(action){
-            is EventIotScreenAction.OnAddGateTierClick -> loadTiers(action.smartGate)
-            is EventIotScreenAction.OnAddIotClick -> _state.update {
+            is EventIotScreenAction.OnAddGateClick -> _state.update {
                 it.copy(
                     isAddingSmartGate = true
                 )
             }
-            is EventIotScreenAction.OnAddingGateClick -> addSmartGate(action.name)
-            is EventIotScreenAction.OnDismissAddIotClick -> _state.update {
+            is EventIotScreenAction.OnChangeTierStateClick -> changeTierState(action.gateId, action.tierId)
+            is EventIotScreenAction.OnCreateGateClick -> addSmartGate(action.name)
+            is EventIotScreenAction.OnDismissActivateGateClick -> dismissActivateGate()
+            is EventIotScreenAction.OnDismissAddGateClick -> _state.update {
                 it.copy(
-                    isSmartGateAdded = false,
                     isAddingSmartGate = false
                 )
             }
-            is EventIotScreenAction.OnMenuIconClick -> {}
-            is EventIotScreenAction.OnRemoveGateTierClick -> removeGateTier(
-                smartGate = action.smartGate,
-                attendeeTier = action.tier.first
-            )
-            is EventIotScreenAction.OnChoseToAddGateTier -> addGateTier(action.gate, action.tier)
-            is EventIotScreenAction.OnDismissAddGateTierClick ->{
-                _state.update {
-                    it.copy(
-                        isAddingGateTier = false,
-                        selectedGate = null,
-                        tiers = emptyList()
-                    )
-                }
-                viewModelScope.launch {
-                    AttenDApp.instance.userPrefsStore.updateData {
-                        UserPreferences(
-                            jwt = it.jwt,
-                            gateIdentifier = null
+            is EventIotScreenAction.OnDismissGateTierDialog -> _state.update {
+                it.copy(
+                    isManagingGateTiers = false,
+                    tiers = emptyList(),
+                    selectedGateId = null
+                )
+            }
+            is EventIotScreenAction.OnGateClick -> {
+                if (action.gate.isOnline) {
+                    _state.update {
+                        it.copy(
+                            selectedGateId = action.gate.id
                         )
                     }
+                    loadTiers(action.gate.id)
                 }
+                else
+                    activateGate(action.gate.id)
             }
+            is EventIotScreenAction.OnMenuIconClick -> {}
         }
     }
 
@@ -105,17 +100,11 @@ class EventIotScreenViewModel(
         viewModelScope.launch {
             eventIotDataSource
                 .addSmartGate(eventId, name)
-                .onSuccess { receivedUniqueRandID ->
+                .onSuccess { receivedGate ->
                     _state.update {
                         it.copy(
-                            smartGates = it.smartGates + SmartGate(name),
-                            isSmartGateAdded = true
-                        )
-                    }
-                    AttenDApp.instance.userPrefsStore.updateData {
-                        UserPreferences(
-                            jwt = it.jwt,
-                            gateIdentifier = receivedUniqueRandID
+                            smartGates = it.smartGates + receivedGate,
+                            isAddingSmartGate = false
                         )
                     }
                 }
@@ -125,77 +114,77 @@ class EventIotScreenViewModel(
         }
     }
 
-    private fun loadTiers(smartGate: SmartGate){
+    private fun loadTiers(smartGateId: Int){
         viewModelScope.launch {
             eventIotDataSource
-                .loadEventTiers(eventId)
+                .loadEventTiers(eventId, smartGateId)
                 .onSuccess { tiers ->
                     _state.update {
                         it.copy(
-                            isAddingGateTier = true,
-                            selectedGate = smartGate,
+                            isManagingGateTiers = true,
                             tiers = tiers
                         )
                     }
                 }
                 .onError { error ->
-                    _state.update {
-                        it.copy(
-                            isAddingGateTier = false
-                        )
-                    }
                     _events.send(EventIotEvent.Error(error))
-
                 }
         }
     }
 
-    private fun addGateTier(smartGate: SmartGate, attendeeTier: AttendeeTier){
+    private fun activateGate(smartGateId: Int){
         viewModelScope.launch {
             eventIotDataSource
-                .addGateTier(eventId, smartGate.name, attendeeTier)
-                .onSuccess {
+                .activateSmartGate(eventId, smartGateId)
+                .onSuccess { uniqueIdentifier ->
+                    AttenDApp.instance.userPrefsStore.updateData {
+                        UserPreferences(
+                            jwt = it.jwt,
+                            gateIdentifier = uniqueIdentifier
+                        )
+                    }
                     _state.update {
                         it.copy(
-                            smartGates = it.smartGates.map { gate ->
-                                if (gate.name == smartGate.name) {
-                                    gate.copy(
-                                        allowedTiers = gate.allowedTiers + Pair(attendeeTier, 0)
-                                    )
-                                } else {
-                                    gate
-                                }
-                            },
-                            isAddingGateTier = false
+                            isActivatingGate = true
                         )
                     }
                 }
                 .onError { error ->
-                    _state.update {
-                        it.copy(
-                            isAddingGateTier = false
-                        )
-                    }
                     _events.send(EventIotEvent.Error(error))
                 }
         }
     }
 
-    private fun removeGateTier(smartGate: SmartGate, attendeeTier: AttendeeTier){
+    private fun dismissActivateGate(){
+        viewModelScope.launch {
+            AttenDApp.instance.userPrefsStore.updateData {
+                UserPreferences(
+                    jwt = it.jwt,
+                    gateIdentifier = null
+                )
+            }
+            _state.update {
+                it.copy(
+                    isActivatingGate = false
+                )
+            }
+        }
+    }
+
+    private fun changeTierState(gateId: Int, tierId: Int){
         viewModelScope.launch {
             eventIotDataSource
-                .removeGateTier(eventId, smartGate.name, attendeeTier)
+                .changeGateTierState(eventId, gateId, tierId)
                 .onSuccess {
                     _state.update {
                         it.copy(
-                            smartGates = it.smartGates.map {  gate ->
-                                if (gate.name == smartGate.name) {
-                                    gate.copy(
-                                        allowedTiers = gate.allowedTiers.filterNot { it.first.title == attendeeTier.title }
+                            tiers = it.tiers.map {  tier ->
+                                if (tier.id == tierId)
+                                    tier.copy(
+                                        isAllowed = !tier.isAllowed!!
                                     )
-                                } else {
-                                    gate
-                                }
+                                else
+                                    tier
                             }
                         )
                     }

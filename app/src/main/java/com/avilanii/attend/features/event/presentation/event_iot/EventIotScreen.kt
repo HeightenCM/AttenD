@@ -26,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.SmartGate
 import com.avilanii.attend.features.event.presentation.event_iot.components.ActivateGateDialog
 import com.avilanii.attend.features.event.presentation.event_iot.components.AddSmartGateDialog
@@ -103,11 +102,11 @@ fun EventIotScreen(
                     onAction(EventIotScreenAction.OnDismissActivateGateClick)
                 }
             }
-            if(state.isManagingGateTiers){
+            if(state.isManagingGateTiers && state.selectedGateId != null && !state.tiers.isEmpty()){
                 GateTierListDialog(
                     tiers = state.tiers,
-                    onChangeTierStateClick = { tier ->
-                        onAction(EventIotScreenAction.OnChangeTierStateClick(tier))
+                    onChangeTierStateClick = { tierId ->
+                        onAction(EventIotScreenAction.OnChangeTierStateClick(state.selectedGateId, tierId))
                     }
                 ) {
                     onAction(EventIotScreenAction.OnDismissGateTierDialog)
