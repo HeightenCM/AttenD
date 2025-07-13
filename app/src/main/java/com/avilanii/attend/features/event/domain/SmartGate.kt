@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SmartGate(
+    val id: Int,
     val name: String,
-    val allowedTiers: List<Pair<AttendeeTier, Int>> = emptyList()
+    val isOnline: Boolean
 )

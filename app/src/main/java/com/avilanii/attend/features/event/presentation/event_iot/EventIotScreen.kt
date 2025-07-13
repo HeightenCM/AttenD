@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.SmartGate
+import com.avilanii.attend.features.event.presentation.event_iot.components.ActivateGateDialog
 import com.avilanii.attend.features.event.presentation.event_iot.components.AddSmartGateDialog
 import com.avilanii.attend.features.event.presentation.event_iot.components.GateTierListDialog
 import com.avilanii.attend.features.event.presentation.event_iot.components.SmartGateListItem
@@ -56,7 +57,7 @@ fun EventIotScreen(
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = {onAction(EventIotScreenAction.OnAddIotClick)},
+                onClick = {onAction(EventIotScreenAction.OnAddGateClick)},
                 icon = { Icon(Icons.Filled.Add, "Add IoT Device") },
                 text = { Text("Add IoT device") },
                 containerColor = MaterialTheme.colorScheme.primary,
@@ -82,37 +83,34 @@ fun EventIotScreen(
                 items(state.smartGates) { smartGate ->
                     SmartGateListItem(
                         smartGate = smartGate,
-                        onRemoveTierClick = { removedTier ->
-                            onAction(EventIotScreenAction.OnRemoveGateTierClick(
-                                smartGate = smartGate,
-                                tier = removedTier
-                            ))
-                        }
                     ) {
-                        onAction(EventIotScreenAction.OnAddGateTierClick(smartGate))
+                        onAction(EventIotScreenAction.OnGateClick(smartGate))
                     }
                     HorizontalDivider()
                 }
             }
-            if (state.isAddingSmartGate){
+            if(state.isAddingSmartGate){
                 AddSmartGateDialog(
-                    isGateAdded = state.isSmartGateAdded,
                     onSubmit = { name ->
-                        onAction(EventIotScreenAction.OnAddingGateClick(name))
+                        onAction(EventIotScreenAction.OnCreateGateClick(name))
                     }
                 ) {
-                    if(state.isSmartGateAdded)
-                        onAction(EventIotScreenAction.OnDismissAddIotClick)
+                    onAction(EventIotScreenAction.OnDismissAddGateClick)
                 }
             }
-            if(state.isAddingGateTier && state.selectedGate != null){
+            if(state.isActivatingGate){
+                ActivateGateDialog {
+                    onAction(EventIotScreenAction.OnDismissActivateGateClick)
+                }
+            }
+            if(state.isManagingGateTiers){
                 GateTierListDialog(
                     tiers = state.tiers,
-                    onSelectTierClick = { selectedTier ->
-                        onAction(EventIotScreenAction.OnChoseToAddGateTier(selectedTier, state.selectedGate))
+                    onChangeTierStateClick = { tier ->
+                        onAction(EventIotScreenAction.OnChangeTierStateClick(tier))
                     }
                 ) {
-                    onAction(EventIotScreenAction.OnDismissAddGateTierClick)
+                    onAction(EventIotScreenAction.OnDismissGateTierDialog)
                 }
             }
         }
@@ -128,17 +126,13 @@ private fun PreviewEventIotScreen() {
                 smartGates = listOf(
                     SmartGate(
                         name = "Hello boss Gate",
-                        allowedTiers = listOf(
-                            Pair(AttendeeTier("Premium"), 50),
-                            Pair(AttendeeTier("Gold"), 540)
-                        )
+                        isOnline = true,
+                        id = 1
                     ),
                     SmartGate(
                         name = "Testing Gate",
-                        allowedTiers = listOf(
-                            Pair(AttendeeTier("Premium"), 10),
-                            Pair(AttendeeTier("Gold"), 540)
-                        )
+                        isOnline = false,
+                        id = 2
                     )
                 )
             )

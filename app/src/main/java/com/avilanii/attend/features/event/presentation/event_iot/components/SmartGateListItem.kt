@@ -1,77 +1,66 @@
 package com.avilanii.attend.features.event.presentation.event_iot.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.SmartGate
 import com.avilanii.attend.ui.theme.AttenDTheme
+import com.avilanii.attend.ui.theme.greenBackground
 
 @Composable
 fun SmartGateListItem(
     modifier: Modifier = Modifier,
     smartGate: SmartGate,
-    onRemoveTierClick: (Pair<AttendeeTier, Int>) -> Unit,
-    onAddTierClick: () -> Unit
+    onClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth().padding(8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    val textValue = if (smartGate.isOnline)
+        " ON "
+    else
+        " OFF "
+    val boxColor = if (smartGate.isOnline)
+        greenBackground
+    else
+        MaterialTheme.colorScheme.errorContainer
+    val textColor = if (smartGate.isOnline)
+        Color.Green
+    else
+        MaterialTheme.colorScheme.onErrorContainer
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable(
+                onClick = onClick
+            )
     ) {
         Text(
-            text = "Testare",
-            style = MaterialTheme.typography.titleMedium,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth()
+            text = smartGate.name
         )
-        Text(
-            text = "TOTAL: " + smartGate.allowedTiers.sumOf { it.second },
-            style = MaterialTheme.typography.bodySmall
-        )
-        smartGate.allowedTiers.forEach {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = it.first.title+": "+it.second.toString(),
-                    style = MaterialTheme.typography.bodySmall
-                )
-                IconButton(
-                    onClick = {
-                        onRemoveTierClick(it)
-                    }
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Close,
-                        contentDescription = "Disallow tier"
-                    )
-                }
-            }
-        }
-        IconButton(
-            onClick = onAddTierClick
+        Box (
+            modifier = modifier
+                .clip(RoundedCornerShape(30f))
+                .background(boxColor)
+                .padding()
         ) {
-            Icon(
-                imageVector = Icons.Default.AddCircle,
-                contentDescription = "Add tier"
-            )
+            Text(
+                text = textValue,
+                color = textColor)
         }
     }
 }
@@ -81,15 +70,8 @@ fun SmartGateListItem(
 private fun PreviewSmartGateListItem() {
     AttenDTheme {
         SmartGateListItem(
-            smartGate = SmartGate(
-                name = "Main Gate",
-                allowedTiers = listOf(
-                    Pair(AttendeeTier("Premium"), 5),
-                    Pair(AttendeeTier("Gold"), 10)
-                )
-            ),
-            onRemoveTierClick = {}
-        ){
+            smartGate = SmartGate("Aha", false)
+        ) {
 
         }
     }
