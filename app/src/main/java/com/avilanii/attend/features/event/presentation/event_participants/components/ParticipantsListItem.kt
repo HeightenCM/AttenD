@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.avilanii.attend.core.domain.models.Email
+import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.Participant
 import com.avilanii.attend.features.event.domain.ParticipantStatus
 import com.avilanii.attend.features.event.presentation.models.ParticipantUi
@@ -48,7 +49,7 @@ fun ParticipantListItem(
             ParticipantState(
                 participantStatus = participantUi.status
             )
-            Text(participantUi.tier?.title ?: "No tier")
+            Text(participantUi.tier.title)
         }
     }
 }
@@ -68,5 +69,7 @@ private fun PreviewParticipantsListItem() {
 internal val previewParticipant = Participant(
     name = "Joshy Al-Kabul Mon Dabugy-dog",
     email = Email("mrjosh.alkabul.mondabugy.dawg@gmail.com"),
-    status = ParticipantStatus.ACCEPTED
+    status = ParticipantStatus.ACCEPTED,
+    id = 1,
+    tier = AttendeeTier(1, "Smecher")
 ).toParticipantUi()

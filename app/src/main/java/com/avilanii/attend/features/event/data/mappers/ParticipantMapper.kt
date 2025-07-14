@@ -9,6 +9,7 @@ fun ParticipantDTO.toParticipant(): Participant{
         name = name,
         email = email.toEmail(),
         status = status,
-        tier = tier
+        tier = tier,
+        id = id!!
     )
 }

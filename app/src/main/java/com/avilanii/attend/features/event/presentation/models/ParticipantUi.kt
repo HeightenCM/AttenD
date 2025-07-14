@@ -7,18 +7,20 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ParticipantUi(
+    val id: Int,
     val name: String,
     val email: String,
     val status: ParticipantStatus,
-    val tier: AttendeeTier?
+    val tier: AttendeeTier
 )
 
 fun Participant.toParticipantUi(): ParticipantUi{
     return ParticipantUi(
+        id = id,
         name = name,
         email = email.value,
         status = status,
-        tier = tier
+        tier = tier ?: AttendeeTier(-1, "Unassigned")
     )
 }
 
@@ -29,7 +31,7 @@ fun List<ParticipantUi>.toCSV(): String {
         } else field
 
     val rows = listOf(listOf("Name", "Email", "Status", "Tier")) +
-            this.map { listOf(it.name, it.email, it.status.name, it.tier?.title ?: "") }
+            this.map { listOf(it.name, it.email, it.status.name, it.tier.title) }
 
     return rows.joinToString("\n") { row ->
         row.joinToString(",") { escape(it) }

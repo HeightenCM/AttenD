@@ -4,6 +4,7 @@ import com.avilanii.attend.core.domain.models.Email
 import kotlinx.serialization.Serializable
 
 data class Participant(
+    val id: Int,
     val name: String,
     val email: Email,
     val status: ParticipantStatus,

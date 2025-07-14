@@ -48,7 +48,7 @@ class RemoteParticipantDataSource(
                 setBody(ParticipantDTO(
                     name = name,
                     email = email,
-                    eventId = eventId
+                    eventId = eventId,
                 ))
                 header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
             }
@@ -88,7 +88,7 @@ class RemoteParticipantDataSource(
         }
     }
 
-    override suspend fun addEventTier(attendeeTier: AttendeeTier, eventId: Int): Result<Unit, NetworkError> {
+    override suspend fun addEventTier(attendeeTier: String, eventId: Int): Result<Int, NetworkError> {
         return safeCall {
             httpClient.post(
                 urlString = constructUrl("events/$eventId/tiers")
@@ -100,40 +100,41 @@ class RemoteParticipantDataSource(
     }
 
     override suspend fun removeEventTier(
-        attendeeTier: AttendeeTier,
+        tierId: Int,
         eventId: Int
     ): Result<Unit, NetworkError> {
         return safeCall {
             httpClient.delete(
-                urlString = constructUrl("events/$eventId/tiers")
+                urlString = constructUrl("events/$eventId/tiers/$tierId")
             ) {
                 header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
-                setBody(attendeeTier)
             }
         }
     }
 
     override suspend fun assignParticipantTier(
-        participant: ParticipantDTO,
-        attendeeTier: AttendeeTier
-    ): Result<Unit, NetworkError> {
+        eventId: Int,
+        participantId: Int,
+        tierId: Int
+    ): Result<String, NetworkError> {
         return safeCall {
             httpClient.post(
-                urlString = constructUrl("events/${participant.eventId}/participants/tiers")
+                urlString = constructUrl("events/${eventId}/participants/${participantId}/tiers/${tierId}")
             ) {
                 header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
-                setBody(Pair(participant, attendeeTier))
             }
         }
     }
 
-    override suspend fun resignParticipantTier(participant: ParticipantDTO): Result<Unit, NetworkError> {
+    override suspend fun resignParticipantTier(
+        eventId: Int,
+        participantId: Int
+    ): Result<Unit, NetworkError> {
         return safeCall {
             httpClient.delete(
-                urlString = constructUrl("events/${participant.eventId}/participants/tiers")
+                urlString = constructUrl("events/${eventId}/participants/${participantId}/tiers")
             ) {
                 header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
-                setBody(participant)
             }
         }
     }

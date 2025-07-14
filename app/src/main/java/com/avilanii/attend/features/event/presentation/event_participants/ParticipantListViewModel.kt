@@ -7,10 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.CheckInConfirmationDTO
-import com.avilanii.attend.features.event.data.networking.datatransferobjects.ParticipantDTO
 import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
-import com.avilanii.attend.features.event.presentation.models.ParticipantUi
 import com.avilanii.attend.features.event.presentation.models.toCSV
 import com.avilanii.attend.features.event.presentation.models.toParticipantUi
 import kotlinx.coroutines.Dispatchers
@@ -88,12 +86,12 @@ class ParticipantListViewModel(
             }
             is ParticipantListAction.OnModifyEventTiersClick -> displayEventTiers()
             is ParticipantListAction.OnAddEventTierClick -> addEventTier(action.eventTier)
-            is ParticipantListAction.OnRemoveEventTierClick -> removeEventTier(action.eventTier)
+            is ParticipantListAction.OnRemoveEventTierClick -> removeEventTier(action.tierId)
             is ParticipantListAction.OnExportToCSVClick -> exportToCSV(action.uri)
             is ParticipantListAction.OnImportFromCSVClick -> importFromCSV(action.uri)
             is ParticipantListAction.OnAssignParticipantTierClick ->
-                assignParticipantTier(action.participant, action.attendeeTier)
-            is ParticipantListAction.OnResignParticipantTierClick -> resignParticipantTier(action.participant)
+                assignParticipantTier(action.participantId, action.tierId)
+            is ParticipantListAction.OnResignParticipantTierClick -> resignParticipantTier(action.participantId)
         }
     }
 
@@ -216,17 +214,17 @@ class ParticipantListViewModel(
         }
     }
 
-    private fun addEventTier(eventTier: AttendeeTier){
+    private fun addEventTier(eventTier: String){
         viewModelScope.launch {
             participantDataSource
                 .addEventTier(
                     attendeeTier = eventTier,
                     eventId = eventId
                 )
-                .onSuccess {
+                .onSuccess { receivedTierId ->
                     _state.update {
                         it.copy(
-                            eventTiers = it.eventTiers + eventTier
+                            eventTiers = it.eventTiers + AttendeeTier(receivedTierId, eventTier)
                         )
                     }
                 }
@@ -240,21 +238,21 @@ class ParticipantListViewModel(
         }
     }
 
-    private fun removeEventTier(eventTier: AttendeeTier){
+    private fun removeEventTier(tierId: Int){
         viewModelScope.launch {
             participantDataSource
                 .removeEventTier(
-                    attendeeTier = eventTier,
+                    tierId = tierId,
                     eventId = eventId
                 )
                 .onSuccess {
                     _state.update {
                         it.copy(
-                            eventTiers = it.eventTiers - eventTier,
-                            participants = it.participants.map {
-                                if(it.tier == eventTier){
-                                    it.copy(tier = null)
-                                } else it
+                            eventTiers = it.eventTiers.filterNot { tier -> tier.id == tierId },
+                            participants = it.participants.map { participantUi ->
+                                if(participantUi.tier.id == tierId){
+                                    participantUi.copy(tier = AttendeeTier(-1,"Unassigned"))
+                                } else participantUi
                             }
                         )
                     }
@@ -269,25 +267,24 @@ class ParticipantListViewModel(
         }
     }
 
-    private fun assignParticipantTier(participant: ParticipantUi, attendeeTier: AttendeeTier){
+    private fun assignParticipantTier(participantId: Int, tierId: Int){
         viewModelScope.launch {
             participantDataSource
                 .assignParticipantTier(
-                    participant = ParticipantDTO(
-                        eventId = eventId,
-                        name = participant.name,
-                        email = participant.email,
-                        tier = participant.tier
-                    ),
-                    attendeeTier = attendeeTier
+                    eventId = eventId,
+                    participantId = participantId,
+                    tierId = tierId
                 )
-                .onSuccess {
+                .onSuccess { tierName ->
                     _state.update {
                         it.copy(
-                            participants = it.participants.map {
-                                if (it.email == participant.email)
-                                    it.copy(tier = attendeeTier)
-                                else it
+                            participants = it.participants.map { participantUi ->
+                                if (participantUi.id == participantId)
+                                    participantUi.copy(
+                                        tier = AttendeeTier(tierId, tierName)
+                                    )
+                                else
+                                    participantUi
                             },
                             isAssigningTier = false,
                             isModifyingAttendeeTiers = false,
@@ -308,23 +305,21 @@ class ParticipantListViewModel(
         }
     }
 
-    private fun resignParticipantTier(participant: ParticipantUi){
+    private fun resignParticipantTier(participantId: Int){
         viewModelScope.launch {
             participantDataSource
                 .resignParticipantTier(
-                    ParticipantDTO(
-                        eventId = eventId,
-                        name = participant.name,
-                        email = participant.email
-                    )
+                    eventId = eventId,
+                    participantId = participantId
                 )
                 .onSuccess {
                     _state.update {
                         it.copy(
-                            participants = it.participants.map {
-                                if(it.email == participant.email)
-                                    it.copy(tier = null)
-                                else it
+                            participants = it.participants.map { participantUi ->
+                                if(participantUi.id == participantId)
+                                    participantUi.copy(tier = AttendeeTier(-1,"Unassigned"))
+                                else
+                                    participantUi
                             },
                             isAssigningTier = false,
                             isModifyingAttendeeTiers = false,

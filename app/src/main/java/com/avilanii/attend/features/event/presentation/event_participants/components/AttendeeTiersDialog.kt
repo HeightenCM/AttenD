@@ -40,9 +40,9 @@ fun AttendeeTiersDialog(
     modifier: Modifier = Modifier,
     tiers: List<AttendeeTier>,
     isAssigningTier: Boolean = false,
-    onDeleteTierClick: (AttendeeTier) -> Unit,
-    onAddTierClick: (AttendeeTier) -> Unit,
-    onAssignTierClick: (AttendeeTier) -> Unit,
+    onDeleteTierClick: (Int) -> Unit,
+    onAddTierClick: (String) -> Unit,
+    onAssignTierClick: (Int) -> Unit,
     onResignTierClick: () -> Unit,
     onDismiss: () -> Unit
 ) {
@@ -72,12 +72,12 @@ fun AttendeeTiersDialog(
                             tierTitle = tier.title,
                             onAssignClick = {
                                 if (isAssigningTier){
-                                    onAssignTierClick(tier)
+                                    onAssignTierClick(tier.id)
                                     onDismiss()
                                 }
                             }
                         ) {
-                            onDeleteTierClick(tier)
+                            onDeleteTierClick(tier.id)
                         }
                         HorizontalDivider(
                             color = Color.LightGray
@@ -134,7 +134,7 @@ fun AttendeeTiersDialog(
                         IconButton(
                             onClick = {
                                 isAddingTier = false
-                                onAddTierClick(AttendeeTier(title = newTier))
+                                onAddTierClick(newTier)
                             }
                         ) {
                             Icon(

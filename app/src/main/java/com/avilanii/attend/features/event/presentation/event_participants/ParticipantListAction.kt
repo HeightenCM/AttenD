@@ -1,7 +1,6 @@
 package com.avilanii.attend.features.event.presentation.event_participants
 
 import android.net.Uri
-import com.avilanii.attend.features.event.domain.AttendeeTier
 import com.avilanii.attend.features.event.presentation.models.ParticipantUi
 
 sealed interface ParticipantListAction {
@@ -19,10 +18,10 @@ sealed interface ParticipantListAction {
     data object OnDismissReviewCheckIn: ParticipantListAction
     data object OnModifyEventTiersClick: ParticipantListAction
     data object OnDismissModifyEventTiersClick: ParticipantListAction
-    data class OnRemoveEventTierClick(val eventTier: AttendeeTier): ParticipantListAction
-    data class OnAddEventTierClick(val eventTier: AttendeeTier): ParticipantListAction
-    data class OnAssignParticipantTierClick(val participant: ParticipantUi, val attendeeTier: AttendeeTier): ParticipantListAction
-    data class OnResignParticipantTierClick(val participant: ParticipantUi): ParticipantListAction
+    data class OnRemoveEventTierClick(val tierId: Int): ParticipantListAction
+    data class OnAddEventTierClick(val eventTier: String): ParticipantListAction
+    data class OnAssignParticipantTierClick(val participantId: Int, val tierId: Int): ParticipantListAction
+    data class OnResignParticipantTierClick(val participantId: Int): ParticipantListAction
     data class OnExportToCSVClick(val uri: Uri): ParticipantListAction
     data class OnImportFromCSVClick(val uri: Uri): ParticipantListAction
 }

@@ -168,6 +168,7 @@ class EventIotScreenViewModel(
                     isActivatingGate = false
                 )
             }
+            loadIotDevices()
         }
     }
 

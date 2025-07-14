@@ -212,20 +212,20 @@ fun ParticipantListScreen(
                 AttendeeTiersDialog(
                     tiers = state.eventTiers,
                     isAssigningTier = state.isAssigningTier,
-                    onDeleteTierClick = { tier ->
-                        onAction(ParticipantListAction.OnRemoveEventTierClick(tier))
+                    onDeleteTierClick = { tierId ->
+                        onAction(ParticipantListAction.OnRemoveEventTierClick(tierId))
                     },
-                    onAddTierClick = { tier ->
-                        onAction(ParticipantListAction.OnAddEventTierClick(tier))
+                    onAddTierClick = { tierTitle ->
+                        onAction(ParticipantListAction.OnAddEventTierClick(tierTitle))
                     },
-                    onAssignTierClick = { tier ->
+                    onAssignTierClick = { tierId ->
                         onAction(ParticipantListAction.OnAssignParticipantTierClick(
-                            participant = state.selectedParticipant!!,
-                            attendeeTier = tier
+                            participantId = state.selectedParticipant!!.id,
+                            tierId = tierId
                         ))
                     },
                     onResignTierClick = {
-                        onAction(ParticipantListAction.OnResignParticipantTierClick(state.selectedParticipant!!))
+                        onAction(ParticipantListAction.OnResignParticipantTierClick(state.selectedParticipant!!.id))
                     }
                 ) {
                     onAction(ParticipantListAction.OnDismissModifyEventTiersClick)
