@@ -1,10 +1,16 @@
 package com.avilanii.attend.features.event.presentation.attending_events.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Face
@@ -35,70 +41,69 @@ fun AttendingEventsListItem(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(200.dp),
         onClick = onClick
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            Row(
-                modifier = modifier.fillMaxWidth().padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = eventUi.name,
+        Column(modifier = Modifier.fillMaxSize()) {
+            Row(modifier = Modifier.weight(1f)) {
+                Box(
                     modifier = Modifier
-                        .padding(5.dp),
-                    textAlign = TextAlign.Left,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.LocationOn,
-                        contentDescription = "Event venue icon"
-                    )
                     Text(
-                        text = eventUi.venue
+                        text = eventUi.name,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.headlineSmall
+                    )
+                }
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(Icons.Filled.DateRange, contentDescription = "Event date")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = "${eventUi.startDateTime.formatted} - ${eventUi.endDateTime.formatted}",
+                        textAlign = TextAlign.Center
                     )
                 }
             }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = modifier.fillMaxWidth().padding(16.dp)
-            ) {
+
+            Row(modifier = Modifier.weight(1f)) {
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(5.dp)
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.DateRange,
-                        contentDescription = "Event date icon"
-                    )
-                    Text(
-                        text = "From ${eventUi.startDateTime} to ${eventUi.endDateTime}"
-                    )
+                    Icon(Icons.Filled.LocationOn, contentDescription = "Venue")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = eventUi.venue)
                 }
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Filled.Face,
-                        contentDescription = "Event creator icon"
-                    )
-                    Text(
-                        text = eventUi.organizer?: "Unknown"
-                    )
+                    Icon(Icons.Filled.Face, contentDescription = "Organizer")
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = eventUi.organizer ?: "Unknown")
                 }
             }
         }
-
     }
 }
 

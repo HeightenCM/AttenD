@@ -62,29 +62,22 @@ fun AccountMenuScreen(
             }
         }
     ) { paddingValues ->
-        if (state.isLoading) {
-            Box(
-                modifier = modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
-        } else {
-            Column(
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues = paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "Account Icon",
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = paddingValues),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AccountCircle,
-                    contentDescription = "Account Icon",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .padding(bottom = 8.dp),
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                    .size(80.dp)
+                    .padding(bottom = 8.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            if (!state.isLoading){
                 Text(
                     text = state.loggedUser?.name ?: "Failed to load",
                     style = MaterialTheme.typography.titleMedium
@@ -94,16 +87,22 @@ fun AccountMenuScreen(
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.height(32.dp))
-                Button(
-                    onClick = { onAction(AccountMenuAction.OnLogOutClick) },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.error,
-                        contentColor = MaterialTheme.colorScheme.onError
-                    )
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(text = "Log out")
+                    CircularProgressIndicator()
                 }
+            }
+            Spacer(modifier = Modifier.height(32.dp))
+            Button(
+                onClick = { onAction(AccountMenuAction.OnLogOutClick) },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onError
+                )
+            ) {
+                Text(text = "Log out")
             }
         }
     }

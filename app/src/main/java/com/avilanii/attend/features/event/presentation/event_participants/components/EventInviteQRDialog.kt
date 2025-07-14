@@ -1,9 +1,9 @@
 package com.avilanii.attend.features.event.presentation.event_participants.components
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
@@ -25,7 +25,7 @@ fun EventInviteQRDialog(
     ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(300.dp)
                 .height(300.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp)

@@ -3,10 +3,12 @@ package com.avilanii.attend.features.event.presentation.attending_events.compone
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.TapAndPlay
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,14 +34,13 @@ fun EventQrDialog(
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(300.dp)
-                .height(200.dp)
                 .padding(16.dp),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(8.dp)
             ) {
                 Text(
                     text = eventTitle,
@@ -52,7 +53,12 @@ fun EventQrDialog(
                 )
                 QrCodeDisplay(qrCode, modifier = modifier.fillMaxWidth().padding(10.dp))
                 Text(
-                    text = "Alternatively, you may tap your phone on the smart gate when NFC is on."
+                    text = "Alternatively, you may tap your phone on the smart gate when NFC is on.",
+                    textAlign = TextAlign.Center
+                )
+                Icon(
+                    imageVector = Icons.Filled.TapAndPlay,
+                    contentDescription = "NFC"
                 )
             }
 
