@@ -10,7 +10,7 @@ import com.avilanii.attend.features.event.data.networking.RemoteAttendingEventDa
 import com.avilanii.attend.features.event.data.networking.RemoteEventDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteEventIotDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteParticipantDataSource
-import com.avilanii.attend.features.event.data.networking.datatransferobjects.RemoteEventAnnouncementDataSource
+import com.avilanii.attend.features.event.data.networking.RemoteEventAnnouncementDataSource
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
 import com.avilanii.attend.features.event.domain.EventAnnouncementsDataSource
 import com.avilanii.attend.features.event.domain.EventDataSource

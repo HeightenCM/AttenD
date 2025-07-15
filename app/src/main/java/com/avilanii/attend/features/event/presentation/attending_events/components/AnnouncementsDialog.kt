@@ -88,7 +88,7 @@ fun AnnouncementsDialog(
                                 Column(modifier = Modifier.padding(16.dp)) {
                                     Text(
                                         text = announcement.title,
-                                        style = MaterialTheme.typography.titleSmall,
+                                        style = MaterialTheme.typography.titleMedium,
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                     Spacer(modifier = Modifier.height(6.dp))

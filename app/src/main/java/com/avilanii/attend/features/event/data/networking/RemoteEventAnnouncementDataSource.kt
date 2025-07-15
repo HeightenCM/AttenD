@@ -1,4 +1,4 @@
-package com.avilanii.attend.features.event.data.networking.datatransferobjects
+package com.avilanii.attend.features.event.data.networking
 
 import com.avilanii.attend.SessionManager
 import com.avilanii.attend.core.data.constructUrl
@@ -7,6 +7,7 @@ import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
 import com.avilanii.attend.features.event.data.mappers.toAnnouncement
+import com.avilanii.attend.features.event.data.networking.datatransferobjects.AnnouncementDTO
 import com.avilanii.attend.features.event.domain.Announcement
 import com.avilanii.attend.features.event.domain.EventAnnouncementsDataSource
 import io.ktor.client.HttpClient
@@ -24,7 +25,7 @@ class RemoteEventAnnouncementDataSource(
             httpClient.get(
                 urlString = constructUrl("events/${eventId}/announcements")
             ) {
-                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
             }
         }.map { response ->
             response.map { it.toAnnouncement() }
@@ -36,11 +37,11 @@ class RemoteEventAnnouncementDataSource(
         title: String,
         description: String
     ): Result<Announcement, NetworkError> {
-        return safeCall {
+        return safeCall<AnnouncementDTO> {
             httpClient.post(
-                urlString = constructUrl("")
+                urlString = constructUrl("events/${eventId}/announcements")
             ) {
-                header(HttpHeaders.Authorization, "Bearer "+ SessionManager.jwtToken)
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
                 setBody(
                     AnnouncementDTO(
                         id = -1,
@@ -50,6 +51,6 @@ class RemoteEventAnnouncementDataSource(
                     )
                 )
             }
-        }
+        }.map { it.toAnnouncement() }
     }
 }
