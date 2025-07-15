@@ -35,7 +35,7 @@ class EventAnalyticsScreenViewModel(
 
     fun onAction(action: EventAnalyticsScreenAction){
         when(action){
-            is EventAnalyticsScreenAction.OnMenuIconClick -> TODO()
+            is EventAnalyticsScreenAction.OnMenuIconClick -> {}
         }
     }
 

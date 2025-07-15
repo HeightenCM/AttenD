@@ -85,6 +85,13 @@ class AttendingEventsListViewModel(
                     selectedQr = action.externalQR.value
                 )
             }
+            is AttendingEventsListAction.OnDismissViewAnnouncements -> _state.update {
+                it.copy(
+                    isViewingAnnouncements = false,
+                    announcements = emptyList()
+                )
+            }
+            is AttendingEventsListAction.OnViewAnnouncementsClick -> getAnnouncements(action.eventId)
         }
     }
 
@@ -198,6 +205,24 @@ class AttendingEventsListViewModel(
                             externalEvents = it.externalEvents + receivedExternalQr,
                             scannedQr = null,
                             isEventNotFound = false
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(AttendingEventListEvent.Error(error))
+                }
+        }
+    }
+
+    private fun getAnnouncements(eventId: Int){
+        viewModelScope.launch {
+            attendingEventDataSource
+                .getAnnouncements(eventId)
+                .onSuccess {  receivedAnnouncements ->
+                    _state.update {
+                        it.copy(
+                            announcements = receivedAnnouncements,
+                            isViewingAnnouncements = true
                         )
                     }
                 }

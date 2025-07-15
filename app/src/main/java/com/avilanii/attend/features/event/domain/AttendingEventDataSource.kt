@@ -10,4 +10,5 @@ interface AttendingEventDataSource {
     suspend fun getQr(eventId: Int): Result<String, NetworkError>
     suspend fun addExternalQr(externalQR: ExternalQR): Result<ExternalQR, NetworkError>
     suspend fun getExternalQrs(): Result<List<ExternalQR>, NetworkError>
+    suspend fun getAnnouncements(eventId: Int): Result<List<Announcement>, NetworkError>
 }

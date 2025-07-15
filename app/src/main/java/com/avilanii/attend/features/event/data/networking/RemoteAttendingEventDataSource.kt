@@ -6,9 +6,12 @@ import com.avilanii.attend.core.data.safeCall
 import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.Result
 import com.avilanii.attend.core.domain.map
+import com.avilanii.attend.features.event.data.mappers.toAnnouncement
 import com.avilanii.attend.features.event.data.mappers.toEvent
+import com.avilanii.attend.features.event.data.networking.datatransferobjects.AnnouncementDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventDTO
 import com.avilanii.attend.features.event.data.networking.datatransferobjects.EventsResponseDTO
+import com.avilanii.attend.features.event.domain.Announcement
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
 import com.avilanii.attend.features.event.domain.Event
 import com.avilanii.attend.features.event.domain.ExternalQR
@@ -89,6 +92,18 @@ class RemoteAttendingEventDataSource(
             ) {
                 header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
             }
+        }
+    }
+
+    override suspend fun getAnnouncements(eventId: Int): Result<List<Announcement>, NetworkError> {
+        return safeCall<List<AnnouncementDTO>> {
+            httpClient.get(
+                constructUrl("events/attending/${eventId}/announcements")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
+            }
+        }.map { announcements ->
+            announcements.map { it.toAnnouncement() }
         }
     }
 }

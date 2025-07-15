@@ -10,11 +10,14 @@ import com.avilanii.attend.features.event.data.networking.RemoteAttendingEventDa
 import com.avilanii.attend.features.event.data.networking.RemoteEventDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteEventIotDataSource
 import com.avilanii.attend.features.event.data.networking.RemoteParticipantDataSource
+import com.avilanii.attend.features.event.data.networking.datatransferobjects.RemoteEventAnnouncementDataSource
 import com.avilanii.attend.features.event.domain.AttendingEventDataSource
+import com.avilanii.attend.features.event.domain.EventAnnouncementsDataSource
 import com.avilanii.attend.features.event.domain.EventDataSource
 import com.avilanii.attend.features.event.domain.EventIotDataSource
 import com.avilanii.attend.features.event.domain.ParticipantDataSource
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListViewModel
+import com.avilanii.attend.features.event.presentation.event_announcements.EventAnnouncementsScreenViewModel
 import com.avilanii.attend.features.event.presentation.event_iot.EventIotScreenViewModel
 import com.avilanii.attend.features.event.presentation.event_list.EventListViewModel
 import com.avilanii.attend.features.event.presentation.event_participants.ParticipantListViewModel
@@ -36,12 +39,14 @@ val appModule = module {
     singleOf(::RemoteAuthDataSource).bind<AuthDataSource>()
     singleOf(::RemoteAccountMenuDataSource).bind<AccountMenuDataSource>()
     singleOf(::RemoteEventIotDataSource).bind<EventIotDataSource>()
+    singleOf(::RemoteEventAnnouncementDataSource).bind<EventAnnouncementsDataSource>()
 
 
     viewModelOf(::EventListViewModel)
     viewModelOf(::AttendingEventsListViewModel)
     viewModelOf(::AccountMenuViewModel)
     viewModelOf(::EventIotScreenViewModel)
+    viewModelOf(::EventAnnouncementsScreenViewModel)
     viewModel{ (eventId: Int) -> ParticipantListViewModel(
         get(),
         eventId,

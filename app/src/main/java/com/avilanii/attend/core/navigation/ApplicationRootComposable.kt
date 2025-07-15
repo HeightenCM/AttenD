@@ -53,6 +53,14 @@ import com.avilanii.attend.features.event.presentation.attending_events.Attendin
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListAction
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListScreen
 import com.avilanii.attend.features.event.presentation.attending_events.AttendingEventsListViewModel
+import com.avilanii.attend.features.event.presentation.event_analytics.EventAnalyticsEvent
+import com.avilanii.attend.features.event.presentation.event_analytics.EventAnalyticsScreen
+import com.avilanii.attend.features.event.presentation.event_analytics.EventAnalyticsScreenAction
+import com.avilanii.attend.features.event.presentation.event_analytics.EventAnalyticsScreenViewModel
+import com.avilanii.attend.features.event.presentation.event_announcements.EventAnnouncementsEvent
+import com.avilanii.attend.features.event.presentation.event_announcements.EventAnnouncementsScreen
+import com.avilanii.attend.features.event.presentation.event_announcements.EventAnnouncementsScreenAction
+import com.avilanii.attend.features.event.presentation.event_announcements.EventAnnouncementsScreenViewModel
 import com.avilanii.attend.features.event.presentation.event_iot.EventIotEvent
 import com.avilanii.attend.features.event.presentation.event_iot.EventIotScreen
 import com.avilanii.attend.features.event.presentation.event_iot.EventIotScreenAction
@@ -278,6 +286,8 @@ fun ApplicationRootComposable(
                         is AttendingEventsListAction.OnSaveExternalQrClick -> {}
                         is AttendingEventsListAction.OnDismissSaveExternalQrClick -> {}
                         is AttendingEventsListAction.OnExternalEventClick -> {}
+                        is AttendingEventsListAction.OnDismissViewAnnouncements -> {}
+                        is AttendingEventsListAction.OnViewAnnouncementsClick -> {}
                     }
                 }
             }
@@ -433,6 +443,42 @@ fun ApplicationRootComposable(
                                     }
                                 }
                             }
+
+                            composable<EventMenuRoutes.Analytics>{
+                                val viewModel: EventAnalyticsScreenViewModel =
+                                    koinViewModel<EventAnalyticsScreenViewModel>(parameters = {
+                                        parametersOf(eventId)
+                                    })
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                val context = LocalContext.current
+
+                                ObserveAsEvents(events = viewModel.events) { event ->
+                                    when (event) {
+                                        is EventAnalyticsEvent.Error -> {
+                                            Toast.makeText(
+                                                context,
+                                                event.error.toString(context),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                }
+
+                                EventAnalyticsScreen(
+                                    modifier = modifier,
+                                    state = state
+                                ) { action ->
+                                    viewModel.onAction(action)
+                                    when (action){
+                                        EventAnalyticsScreenAction.OnMenuIconClick -> {
+                                            scope.launch {
+                                                drawerState.apply { if (isClosed) open() else close() }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             composable<EventMenuRoutes.IoT> {
                                 val viewModel: EventIotScreenViewModel =
                                     koinViewModel<EventIotScreenViewModel>(parameters = {
@@ -452,6 +498,7 @@ fun ApplicationRootComposable(
                                         }
                                     }
                                 }
+
                                 EventIotScreen(
                                     state = state,
                                     modifier = modifier
@@ -470,6 +517,44 @@ fun ApplicationRootComposable(
                                         is EventIotScreenAction.OnDismissAddGateClick -> {}
                                         is EventIotScreenAction.OnDismissGateTierDialog -> {}
                                         is EventIotScreenAction.OnGateClick -> {}
+                                    }
+                                }
+                            }
+
+                            composable<EventMenuRoutes.Announcements>{
+                                val viewModel: EventAnnouncementsScreenViewModel =
+                                    koinViewModel<EventAnnouncementsScreenViewModel>(parameters = {
+                                        parametersOf(eventId)
+                                    })
+                                val state by viewModel.state.collectAsStateWithLifecycle()
+                                val context = LocalContext.current
+
+                                ObserveAsEvents(events = viewModel.events) { event ->
+                                    when (event) {
+                                        is EventAnnouncementsEvent.Error -> {
+                                            Toast.makeText(
+                                                context,
+                                                event.error.toString(context),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
+                                    }
+                                }
+
+                                EventAnnouncementsScreen(
+                                    modifier = modifier,
+                                    state = state
+                                ) { action ->
+                                    viewModel.onAction(action)
+                                    when (action){
+                                        is EventAnnouncementsScreenAction.OnDismissPostAnnouncementDialog -> {}
+                                        is EventAnnouncementsScreenAction.OnMenuIconClick -> {
+                                            scope.launch {
+                                                drawerState.apply { if (isClosed) open() else close() }
+                                            }
+                                        }
+                                        is EventAnnouncementsScreenAction.OnPostAnnouncementClick -> {}
+                                        is EventAnnouncementsScreenAction.OnPostedAnnouncementClick -> {}
                                     }
                                 }
                             }

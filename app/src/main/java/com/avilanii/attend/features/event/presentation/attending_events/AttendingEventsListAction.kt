@@ -13,4 +13,6 @@ sealed interface AttendingEventsListAction {
     data class OnRejectEventInvitationClick(val eventId: Int): AttendingEventsListAction
     data class OnSaveExternalQrClick(val externalQR: ExternalQR): AttendingEventsListAction
     data object OnDismissSaveExternalQrClick: AttendingEventsListAction
+    data class OnViewAnnouncementsClick(val eventId: Int): AttendingEventsListAction
+    data object OnDismissViewAnnouncements: AttendingEventsListAction
 }

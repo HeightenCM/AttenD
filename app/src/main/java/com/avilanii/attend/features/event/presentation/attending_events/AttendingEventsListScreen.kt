@@ -4,9 +4,13 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -14,9 +18,11 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.NotificationImportant
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Event
 import androidx.compose.material.icons.outlined.EventAvailable
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -38,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import com.avilanii.attend.core.navigation.BottomNavigationItem
 import com.avilanii.attend.features.event.domain.ExternalQR
 import com.avilanii.attend.features.event.presentation.attending_events.components.AddExternalEventDialog
+import com.avilanii.attend.features.event.presentation.attending_events.components.AnnouncementsDialog
 import com.avilanii.attend.features.event.presentation.attending_events.components.AttendingEventsListItem
 import com.avilanii.attend.features.event.presentation.attending_events.components.EventParticipationInterogation
 import com.avilanii.attend.features.event.presentation.attending_events.components.EventQrDialog
@@ -136,6 +143,26 @@ fun AttendingEventsListScreen(
                             onAccept = { onAction(AttendingEventsListAction.OnAcceptEventInvitationClick(eventUi.id)) },
                             onReject = { onAction(AttendingEventsListAction.OnRejectEventInvitationClick(eventUi.id)) }
                         )
+                    else
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Button(
+                                onClick = {onAction(AttendingEventsListAction.OnViewAnnouncementsClick(eventUi.id))}
+                            ) {
+                                Text(
+                                    text = "View announcements"
+                                )
+                                Spacer(modifier = Modifier.width(5.dp))
+                                Icon(
+                                    imageVector = Icons.Filled.NotificationImportant,
+                                    contentDescription = "View announcements"
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                            }
+                        }
                     HorizontalDivider()
                 }
                 items(state.externalEvents){ externalEvent ->
@@ -165,6 +192,13 @@ fun AttendingEventsListScreen(
                             title = title
                         )
                     ))
+                }
+            }
+            if (state.isViewingAnnouncements && state.announcements.isNotEmpty()){
+                AnnouncementsDialog(
+                    announcements = state.announcements
+                ) {
+                    onAction(AttendingEventsListAction.OnDismissViewAnnouncements)
                 }
             }
         }

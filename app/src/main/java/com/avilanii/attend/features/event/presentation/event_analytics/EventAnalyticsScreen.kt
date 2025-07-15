@@ -26,7 +26,7 @@ fun EventAnalyticsScreen(modifier: Modifier = Modifier,
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Event analytics") },
+                title = { Text("Analytics") },
                 navigationIcon = {
                     IconButton(onClick = {onAction(EventAnalyticsScreenAction.OnMenuIconClick)}) {
                         Icon(Icons.Filled.Menu, contentDescription = "Open event menu")
