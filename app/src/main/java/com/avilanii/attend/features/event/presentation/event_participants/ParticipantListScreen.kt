@@ -134,7 +134,12 @@ fun ParticipantListScreen(
                                 text = { Text("Import from CSV") },
                                 onClick = {
                                     isEventActionMenuOpen = false
-                                    //importFromCsvLauncher.launch("text/csv")
+                                    importFromCsvLauncher.launch(arrayOf(
+                                        "text/csv",
+                                        "text/comma-separated-values",
+                                        "application/csv",
+                                        "text/plain"
+                                    ))
                                 }
                             )
                             DropdownMenuItem(

@@ -138,4 +138,22 @@ class RemoteParticipantDataSource(
             }
         }
     }
+
+    override suspend fun addParticipants(
+        eventId: Int,
+        participants: List<Pair<String, String>>
+    ): Result<List<Participant>, NetworkError> {
+        return safeCall<List<ParticipantDTO>> {
+            httpClient.post(
+                urlString = constructUrl("events/${eventId}/participants/csv")
+            ){
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
+                setBody(participants)
+            }
+        }.map { response ->
+            response.map {
+                it.toParticipant()
+            }
+        }
+    }
 }

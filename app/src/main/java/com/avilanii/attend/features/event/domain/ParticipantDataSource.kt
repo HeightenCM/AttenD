@@ -14,4 +14,5 @@ interface ParticipantDataSource {
     suspend fun removeEventTier(tierId: Int, eventId: Int): Result<Unit, NetworkError>
     suspend fun assignParticipantTier(eventId: Int, participantId: Int, tierId: Int): Result<String, NetworkError>
     suspend fun resignParticipantTier(eventId: Int, participantId: Int): Result<Unit, NetworkError>
+    suspend fun addParticipants(eventId: Int, participants :List<Pair<String, String>>): Result<List<Participant>, NetworkError>
 }

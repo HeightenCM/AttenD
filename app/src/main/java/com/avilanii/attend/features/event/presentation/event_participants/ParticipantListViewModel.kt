@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ParticipantListViewModel(
     private val participantDataSource: ParticipantDataSource,
@@ -88,7 +89,9 @@ class ParticipantListViewModel(
             is ParticipantListAction.OnAddEventTierClick -> addEventTier(action.eventTier)
             is ParticipantListAction.OnRemoveEventTierClick -> removeEventTier(action.tierId)
             is ParticipantListAction.OnExportToCSVClick -> exportToCSV(action.uri)
-            is ParticipantListAction.OnImportFromCSVClick -> importFromCSV(action.uri)
+            is ParticipantListAction.OnImportFromCSVClick -> importFromCSV(action.uri){ participants ->
+                addParticipants(participants)
+            }
             is ParticipantListAction.OnAssignParticipantTierClick ->
                 assignParticipantTier(action.participantId, action.tierId)
             is ParticipantListAction.OnResignParticipantTierClick -> resignParticipantTier(action.participantId)
@@ -141,6 +144,23 @@ class ParticipantListViewModel(
         }
         _state.update {
             it.copy(isAddingParticipant = false)
+        }
+    }
+
+    private fun addParticipants(participants: List<Pair<String, String>>){
+        viewModelScope.launch {
+            participantDataSource
+                .addParticipants(eventId,participants)
+                .onSuccess {  participants ->
+                    _state.update {
+                        it.copy(
+                            participants = it.participants + participants.map { it.toParticipantUi() }
+                        )
+                    }
+                }
+                .onError { error ->
+                    _events.send(ParticipantListEvent.Error(error))
+                }
         }
     }
 
@@ -350,9 +370,45 @@ class ParticipantListViewModel(
         }
     }
 
-    private fun importFromCSV(uri: Uri){
-        viewModelScope.launch {
-            TODO(":(")
+    private fun importFromCSV(uri: Uri, onResult: (List<Pair<String, String>>) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val participants = mutableListOf<Pair<String, String>>()
+
+            try {
+                contentResolver.openInputStream(uri)?.use { inputStream ->
+                    inputStream.bufferedReader().useLines { lines ->
+                        val iterator = lines.iterator()
+                        if (!iterator.hasNext()) return@useLines
+
+                        val header = iterator.next().split(",").map { it.trim() }
+
+                        val nameIndex = header.indexOfFirst { it.equals("name", ignoreCase = true) }
+                        val emailIndex = header.indexOfFirst { it.equals("email", ignoreCase = true) }
+
+                        if (nameIndex == -1 || emailIndex == -1) return@useLines
+
+                        iterator.forEachRemaining { line ->
+                            val fields = line.split(",").map { it.trim() }
+
+                            if (fields.size > maxOf(nameIndex, emailIndex)) {
+                                val name = fields[nameIndex]
+                                val email = fields[emailIndex]
+
+                                if (name.isNotBlank() && email.isNotBlank()) {
+                                    participants.add(Pair(first = name, second = email))
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            withContext(Dispatchers.Main) {
+                onResult(participants)
+            }
         }
     }
+
 }
