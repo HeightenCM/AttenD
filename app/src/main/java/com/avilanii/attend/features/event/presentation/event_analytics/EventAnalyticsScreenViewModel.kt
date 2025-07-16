@@ -36,6 +36,7 @@ class EventAnalyticsScreenViewModel(
         when(action){
             is EventAnalyticsScreenAction.OnMenuIconClick -> {}
             is EventAnalyticsScreenAction.OnTierDistributionPieClick -> loadEventTierDistribution()
+            is EventAnalyticsScreenAction.OnParticipantStatusDistributionClick -> loadParticipantStatusDistribution()
         }
     }
 
@@ -46,8 +47,27 @@ class EventAnalyticsScreenViewModel(
                 .onSuccess { tierDistribution ->
                     _state.update {
                         it.copy(
-                            eventTierDistribution = tierDistribution,
-                            isShowingTierDistributionPie = true
+                            pieValues = tierDistribution,
+                            isShowingPie = true
+                        )
+                    }
+                }
+                .onError { error ->
+                    _state.update { it.copy(isLoading = false) }
+                    _events.send(EventAnalyticsEvent.Error(error))
+                }
+        }
+    }
+
+    private fun loadParticipantStatusDistribution() {
+        viewModelScope.launch {
+            eventAnalyticsDataSource
+                .getParticipantStatusDistribution(eventId)
+                .onSuccess { participantDistribution ->
+                    _state.update {
+                        it.copy(
+                            pieValues = participantDistribution,
+                            isShowingPie = true
                         )
                     }
                 }

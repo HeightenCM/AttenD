@@ -70,7 +70,6 @@ fun List<Pair<String,Int>>.toPieChartData(): List<PieData>{
         Color(0xFFFFC107), Color(0xFF03A9F4),
         Color(0xFFE91E63)
     )
-    val total = this.sumOf { it.second.toDouble() }
     return this.mapIndexed { i, (label, value) ->
         PieData(
             value = value.toFloat(),

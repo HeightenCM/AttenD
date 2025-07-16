@@ -23,4 +23,14 @@ class RemoteEventAnalyticsDataSource(
             }
         }
     }
+
+    override suspend fun getParticipantStatusDistribution(eventId: Int): Result<List<Pair<String, Int>>, NetworkError> {
+        return safeCall {
+            httpClient.get(
+                urlString = constructUrl("/events/${eventId}/analytics/statusPie")
+            ) {
+                header(HttpHeaders.Authorization, "Bearer " + SessionManager.jwtToken)
+            }
+        }
+    }
 }

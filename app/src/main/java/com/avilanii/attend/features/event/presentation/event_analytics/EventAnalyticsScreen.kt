@@ -67,6 +67,13 @@ fun EventAnalyticsScreen(modifier: Modifier = Modifier,
                                     onAction(EventAnalyticsScreenAction.OnTierDistributionPieClick)
                                 }
                             )
+                            DropdownMenuItem(
+                                text = { Text("Status distribution pie chart") },
+                                onClick = {
+                                    isEventActionMenuOpen = false
+                                    onAction(EventAnalyticsScreenAction.OnParticipantStatusDistributionClick)
+                                }
+                            )
                         }
                     }
                 }
@@ -86,11 +93,11 @@ fun EventAnalyticsScreen(modifier: Modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if (state.isShowingTierDistributionPie && state.eventTierDistribution.isNotEmpty()) {
+                if (state.isShowingPie) {
                     EventPieChart(
                         modifier = Modifier
                             .padding(paddingValues),
-                        data = state.eventTierDistribution,
+                        data = state.pieValues,
                     )
                 }
             }

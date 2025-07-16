@@ -475,8 +475,8 @@ fun ApplicationRootComposable(
                                                 drawerState.apply { if (isClosed) open() else close() }
                                             }
                                         }
-
                                         is EventAnalyticsScreenAction.OnTierDistributionPieClick -> {}
+                                        is EventAnalyticsScreenAction.OnParticipantStatusDistributionClick -> {}
                                     }
                                 }
                             }

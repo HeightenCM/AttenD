@@ -5,4 +5,5 @@ import com.avilanii.attend.core.domain.Result
 
 interface EventAnalyticsDataSource {
     suspend fun getEventTierDistribution(eventId: Int): Result<List<Pair<String, Int>>, NetworkError>
+    suspend fun getParticipantStatusDistribution(eventId: Int): Result<List<Pair<String, Int>>, NetworkError>
 }
