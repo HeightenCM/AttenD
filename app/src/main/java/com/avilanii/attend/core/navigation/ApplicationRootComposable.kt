@@ -36,6 +36,7 @@ import androidx.navigation.toRoute
 import com.avilanii.attend.AttenDApp
 import com.avilanii.attend.SessionManager
 import com.avilanii.attend.core.data.UserPreferences
+import com.avilanii.attend.core.domain.NetworkError
 import com.avilanii.attend.core.domain.onError
 import com.avilanii.attend.core.domain.onSuccess
 import com.avilanii.attend.core.presentation.ObserveAsEvents
@@ -105,6 +106,7 @@ fun ApplicationRootComposable(
             startDestination = Login("", "")
         ) {
             composable<Login>{
+                val context = LocalContext.current
                 val args = it.toRoute<Login>()
                 val authDataSource = koinInject<AuthDataSource>()
                 val coroutineScope = rememberCoroutineScope()
@@ -128,8 +130,13 @@ fun ApplicationRootComposable(
                                             }
                                         }
                                     }
-                                    .onError {
-                                        TODO("Invalid credentials!")
+                                    .onError { error ->
+                                        if (error == NetworkError.BAD_REQUEST)
+                                        Toast.makeText(
+                                            context,
+                                            "Invalid credentials!",
+                                            Toast.LENGTH_LONG
+                                        ).show()
                                     }
                             }
                         }
@@ -140,6 +147,7 @@ fun ApplicationRootComposable(
                 }
             }
             composable<Register> {
+                val context = LocalContext.current
                 val authDataSource = koinInject<AuthDataSource>()
                 val coroutineScope = rememberCoroutineScope()
                 RegisterScreen{ action ->
@@ -157,8 +165,14 @@ fun ApplicationRootComposable(
                                             }
                                         }
                                     }
-                                    .onError {
-
+                                    .onError {error ->
+                                        if (error == NetworkError.CONFLICT){
+                                            Toast.makeText(
+                                                context,
+                                                "Account already exists with that email!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }
                                     }
                             }
                         }

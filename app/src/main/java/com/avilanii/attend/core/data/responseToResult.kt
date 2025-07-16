@@ -17,8 +17,10 @@ suspend inline fun <reified T> responseToResult(
                 Result.Error(NetworkError.SERIALIZATION)
             }
         }
+        400 -> Result.Error(NetworkError.BAD_REQUEST)
         404 -> Result.Error(NetworkError.NOT_FOUND)
         408 -> Result.Error(NetworkError.REQUEST_TIMEOUT)
+        409 -> Result.Error(NetworkError.CONFLICT)
         429 -> Result.Error(NetworkError.TOO_MANY_REQUESTS)
         in 500..599 -> Result.Error(NetworkError.SERVER_ERROR)
         else -> Result.Error(NetworkError.UNKNOWN)
