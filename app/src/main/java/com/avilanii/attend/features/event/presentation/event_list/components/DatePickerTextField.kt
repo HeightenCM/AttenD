@@ -75,10 +75,12 @@ fun DatePickerTextField(
         label = { Text("Date interval") },
         readOnly = true,
         enabled = false,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        colors = TextFieldDefaults.colors(
             disabledTextColor = fieldColor,
-            disabledBorderColor = fieldColor,
-            disabledLabelColor = fieldColor),
+            disabledContainerColor = Color.Transparent,
+            disabledLabelColor = fieldColor,
+            disabledIndicatorColor = fieldColor
+        ),
         modifier = modifier
             .alpha(1f)
             .fillMaxWidth()

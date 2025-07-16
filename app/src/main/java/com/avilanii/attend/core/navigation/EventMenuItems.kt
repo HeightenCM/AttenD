@@ -26,7 +26,7 @@ enum class EventMenuItems(
     Analytics(Icons.Filled.Analytics,
         Icons.Outlined.Analytics,
         "Analytics",
-        EventMenuRoutes.Participants
+        EventMenuRoutes.Analytics
     ),
     Iot(Icons.Filled.DeviceHub,
         Icons.Outlined.DeviceHub,

@@ -1,8 +1,7 @@
 package com.avilanii.attend.features.event.presentation.event_analytics
 
-import com.avilanii.attend.features.event.domain.AttendeeTier
-
 data class EventAnalyticsScreenState(
-    val eventTierDistribution: List<Pair<AttendeeTier, Int>> = emptyList(),
-    val isLoading: Boolean = false
+    val eventTierDistribution: List<Pair<String, Int>> = emptyList(),
+    val isLoading: Boolean = false,
+    val isShowingTierDistributionPie: Boolean = false
 )

@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-
 class EventAnalyticsScreenViewModel(
     private val eventAnalyticsDataSource: EventAnalyticsDataSource,
     private val eventId: Int
@@ -36,6 +35,7 @@ class EventAnalyticsScreenViewModel(
     fun onAction(action: EventAnalyticsScreenAction){
         when(action){
             is EventAnalyticsScreenAction.OnMenuIconClick -> {}
+            is EventAnalyticsScreenAction.OnTierDistributionPieClick -> loadEventTierDistribution()
         }
     }
 
@@ -46,7 +46,8 @@ class EventAnalyticsScreenViewModel(
                 .onSuccess { tierDistribution ->
                     _state.update {
                         it.copy(
-                            eventTierDistribution = tierDistribution
+                            eventTierDistribution = tierDistribution,
+                            isShowingTierDistributionPie = true
                         )
                     }
                 }

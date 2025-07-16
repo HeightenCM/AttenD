@@ -470,11 +470,13 @@ fun ApplicationRootComposable(
                                 ) { action ->
                                     viewModel.onAction(action)
                                     when (action){
-                                        EventAnalyticsScreenAction.OnMenuIconClick -> {
+                                        is EventAnalyticsScreenAction.OnMenuIconClick -> {
                                             scope.launch {
                                                 drawerState.apply { if (isClosed) open() else close() }
                                             }
                                         }
+
+                                        is EventAnalyticsScreenAction.OnTierDistributionPieClick -> {}
                                     }
                                 }
                             }

@@ -15,6 +15,8 @@ zxing = "3.5.3"
 zxingEmbedded = "4.3.0"
 dataStore = "1.1.7"
 extendedIcons = "1.7.8"
+vico = "2.1.3"
+composableGraphs = "1.2.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,6 +49,9 @@ zxingEmbedded = {module = "com.journeyapps:zxing-android-embedded", version.ref 
 dataStore = {module = "androidx.datastore:datastore-preferences", version.ref = "dataStore"}
 dataStoreCore = {module = "androidx.datastore:datastore-core", version.ref = "dataStore"}
 extendedIcons = {module = "androidx.compose.material:material-icons-extended", version.ref = "extendedIcons"}
+vico = {module = "com.patrykandpatrick.vico:core", version.ref = "vico"}
+vicoCompose = {module = "com.patrykandpatrick.vico:compose", version.ref = "vico"}
+composableGraphs = {module = "com.github.jaikeerthick:Composable-Graphs", version.ref = "composableGraphs"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -64,7 +69,7 @@ compose = [
     "androidx-ui-graphics",
     "androidx-ui-tooling-preview",
     "androidx-compose-navigation",
-    "extendedIcons"
+    "extendedIcons",
 ]
 compose-debug = [
     "androidx-ui-tooling",
@@ -90,4 +95,10 @@ qr = [
 datastore = [
     "dataStore",
     "dataStoreCore"
+]
+
+graphs = [
+    "vico",
+    "vicoCompose",
+    "composableGraphs"
 ]

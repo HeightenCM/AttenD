@@ -69,4 +69,5 @@ dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.bundles.qr)
     implementation(libs.bundles.datastore)
+    implementation(libs.bundles.graphs)
 }
